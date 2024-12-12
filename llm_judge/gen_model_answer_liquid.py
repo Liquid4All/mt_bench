@@ -412,7 +412,7 @@ if __name__ == "__main__":
 
     args.model_id = args.model_id.replace("/", "_")
 
-    question_file = f"/home/simon/swallow-evaluation/fastchat/fastchat/llm_judge/data/japanese_mt_bench/question.jsonl"
+    question_file = f"/fastchat/llm_judge/data/japanese_mt_bench/question.jsonl"
     if args.answer_file:
         answer_file = args.answer_file
     else:
