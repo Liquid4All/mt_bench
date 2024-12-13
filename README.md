@@ -14,10 +14,15 @@ To automate the evaluation process, we prompt strong LLMs like GPT-4 to act as j
 - [Citation](#citation)
 
 ## Install
+Install the lfm repo to run liquid hf models
+https://github.com/Liquid4All/liquid_lfm
+
+after lfm is installed install the following:
 ```
 pip install -e ".[model_worker,llm_judge]"
 pip install openai==0.28.1
 ```
+
 ## MT-Bench
 
 ### Evaluate a model on MT-bench
