@@ -16,6 +16,7 @@ To automate the evaluation process, we prompt strong LLMs like GPT-4 to act as j
 ## Install
 ```
 pip install -e ".[model_worker,llm_judge]"
+pip install openai==0.28.1
 ```
 ## MT-Bench
 
@@ -25,18 +26,21 @@ pip install -e ".[model_worker,llm_judge]"
 Code to run JP MT Bench for LFMs
 
 ```
+cd llm_judge
 python gen_model_answer_liquid.py --model-path /lambdafs/checkpoints/maxime_3B_sft298860_dpo_dpoliquid_epoch2_302062_HF --model-id lfm-3b-jp-hf --bench-name japanese_mt_bench --num-choices 5
 ```
 
 Code to run JP MT Bench via labs API
 ```
-python3 gen_api_answer_liquid.py --bench-name japanese_mt_bench --num-choices --model lfm-3b-jp --openai-api-key <labs-api-key> --openai-api-base https://inference-1.liquid.ai/v1
+cd llm_judge
+python3 gen_api_answer_liquid.py --bench-name japanese_mt_bench --model lfm-3b-jp --openai-api-key <labs-api-key> --openai-api-base https://inference-1.liquid.ai/v1
 ```
 
 Note, --num choices should be set to 5 in the Swallow evals.
 
 To run open-source models
 ```
+cd llm_judge
 python gen_model_answer.py --model-path lmsys/vicuna-7b-v1.5 --model-id vicuna-7b-v1.5
 ```
 
@@ -51,11 +55,13 @@ For each turn, GPT-4 will give a score on a scale of 10. We then compute the ave
 
 ```
 export OPENAI_API_KEY=XXXXXX  # set the OpenAI API key
+cd llm_judge
 python gen_judgment.py --model-list [LIST-OF-MODEL-ID] --parallel [num-concurrent-api-call]
 ```
 
 e.g.,
 ```
+cd llm_judge
 python gen_judgment.py --model-list lfm-3b-jp --parallel 2
 ```
 The judgments will be saved to `data/mt_bench/model_judgment/gpt-4_single.jsonl`
@@ -64,13 +70,9 @@ The judgments will be saved to `data/mt_bench/model_judgment/gpt-4_single.jsonl`
 
 - Show the scores for selected models
   ```
+  cd llm_judge
   python show_result.py --model-list lfm-3b-jp --bench-name japanese_mt_bench --output-file <output_location.json>
   ```
-- Show all scores
-  ```
-  python show_result.py
-  ```
-
 ---
 
 ### How to get GPT-3.5/GPT-4/Claude's answer?
