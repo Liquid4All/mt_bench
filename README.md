@@ -32,13 +32,13 @@ Code to run JP MT Bench for LFMs
 
 ```
 cd llm_judge
-python gen_model_answer_liquid.py --model-path /lambdafs/checkpoints/maxime_3B_sft298860_dpo_dpoliquid_epoch2_302062_HF --model-id lfm-3b-jp-hf --bench-name japanese_mt_bench --num-choices 5
+srun --gpus=1 python gen_model_answer_liquid.py --model-path /lambdafs/checkpoints/maxime_3B_sft298860_dpo_dpoliquid_epoch2_302062_HF --model-id lfm-3b-jp-hf --bench-name japanese_mt_bench --num-choices 5
 ```
 
 Code to run JP MT Bench via labs API
 ```
 cd llm_judge
-python3 gen_api_answer_liquid.py --bench-name japanese_mt_bench --model lfm-3b-jp --openai-api-key <labs-api-key> --openai-api-base https://inference-1.liquid.ai/v1
+python3 gen_api_answer_liquid.py --bench-name japanese_mt_bench --model lfm-3b-jp --openai-api-key <labs-api-key> --openai-api-base https://inference-1.liquid.ai/v1 --num-choices 5
 ```
 
 Note, --num choices should be set to 5 in the Swallow evals.

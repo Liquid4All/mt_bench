@@ -1,0 +1,144 @@
+{
+    "lfm-3b-1213-api": {
+        "overall": {
+            "first_turn": {
+                "score": 7.1875,
+                "new_variance": 0.0723489806424389
+            },
+            "second_turn": {
+                "score": 6.678771439087228,
+                "new_variance": 0.12075975219994331
+            },
+            "average": {
+                "score": 6.938892997085006,
+                "new_variance": 0.07667878629546027
+            }
+        },
+        "Writing": {
+            "first_turn": {
+                "score": 8.379999999999999,
+                "new_variance": 0.16431676725155023
+            },
+            "second_turn": {
+                "score": 8.528888888888888,
+                "new_variance": 0.2733649484877834
+            },
+            "average": {
+                "score": 8.454736842105262,
+                "new_variance": 0.177093727629329
+            }
+        },
+        "Roleplay": {
+            "first_turn": {
+                "score": 8.52,
+                "new_variance": 0.2167948338867878
+            },
+            "second_turn": {
+                "score": 7.517777777777778,
+                "new_variance": 0.35343115347534604
+            },
+            "average": {
+                "score": 8.037836257309943,
+                "new_variance": 0.21366523664469309
+            }
+        },
+        "Reasoning": {
+            "first_turn": {
+                "score": 6.639999999999999,
+                "new_variance": 0.5128352561983233
+            },
+            "second_turn": {
+                "score": 6.0200000000000005,
+                "new_variance": 0.25884358211089564
+            },
+            "average": {
+                "score": 6.33,
+                "new_variance": 0.17888543819998315
+            }
+        },
+        "Math": {
+            "first_turn": {
+                "score": 4.64,
+                "new_variance": 0.11401754250991382
+            },
+            "second_turn": {
+                "score": 4.18,
+                "new_variance": 0.19235384061671354
+            },
+            "average": {
+                "score": 4.41,
+                "new_variance": 0.09617692030835677
+            }
+        },
+        "Coding": {
+            "first_turn": {
+                "score": 5.12,
+                "new_variance": 0.3701351104664351
+            },
+            "second_turn": {
+                "score": 5.0,
+                "new_variance": 0.37416573867739406
+            },
+            "average": {
+                "score": 5.06,
+                "new_variance": 0.3489269264473579
+            }
+        },
+        "Extraction": {
+            "first_turn": {
+                "score": 7.8,
+                "new_variance": 0.12247448713915883
+            },
+            "second_turn": {
+                "score": 5.665555555555555,
+                "new_variance": 0.4990793994081305
+            },
+            "average": {
+                "score": 6.795964912280702,
+                "new_variance": 0.3202520936836665
+            }
+        },
+        "STEM": {
+            "first_turn": {
+                "score": 8.38,
+                "new_variance": 0.2588435821108954
+            },
+            "second_turn": {
+                "score": 7.875555555555556,
+                "new_variance": 0.2190608461614889
+            },
+            "average": {
+                "score": 8.134736842105264,
+                "new_variance": 0.20481902017373974
+            }
+        },
+        "Humanities": {
+            "first_turn": {
+                "score": 8.02,
+                "new_variance": 0.21679483388678814
+            },
+            "second_turn": {
+                "score": 8.878333333333334,
+                "new_variance": 0.27905539518211603
+            },
+            "average": {
+                "score": 8.427894736842106,
+                "new_variance": 0.07079876675452221
+            }
+        },
+        "result": {
+            "first_turn": {
+                "score": "0.7188,0.8380,0.8520,0.6640,0.4640,0.5120,0.7800,0.8380,0.8020",
+                "new_variance": "0.0723,0.1643,0.2168,0.5128,0.1140,0.3701,0.1225,0.2588,0.2168"
+            },
+            "second_turn": {
+                "score": "0.6679,0.8529,0.7518,0.6020,0.4180,0.5000,0.5666,0.7876,0.8878",
+                "new_variance": "0.1208,0.2734,0.3534,0.2588,0.1924,0.3742,0.4991,0.2191,0.2791"
+            },
+            "average": {
+                "score": "0.6939,0.8455,0.8038,0.6330,0.4410,0.5060,0.6796,0.8135,0.8428",
+                "new_variance": "0.0767,0.1771,0.2137,0.1789,0.0962,0.3489,0.3203,0.2048,0.0708"
+            }
+        }
+    }
+}

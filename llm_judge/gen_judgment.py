@@ -208,7 +208,7 @@ if __name__ == "__main__":
         "--first-n", type=int, help="A debug option. Only run the first `n` judgments."
     )
     parser.add_argument(
-        "--azure", action="store_true", help="Use Azure API instead of openai.", default=True
+        "--azure", action="store_true", help="Use Azure API instead of openai.", default=False
     )
     args = parser.parse_args()
 
@@ -245,7 +245,7 @@ if __name__ == "__main__":
             )
         else:
             output_file = (
-                f"data/{args.bench_name}/model_judgment/{args.judge_model}_single.jsonl"
+                f"data/{args.bench_name}/model_judgment/{args.judge_model}_single_hf.jsonl"
             )
         make_match_func = make_match_single
         baseline_model = None

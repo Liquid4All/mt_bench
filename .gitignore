@@ -34,3 +34,5 @@ build
 fastchat/llm_judge/data/*/model_answer/*
 fastchat/llm_judge/data/*/model_judgment/*
 fastchat/llm_judge/data/japanese_mt_bench/misc/
+fastchat/llm_judge/data/japanese_mt_bench/model_answer/*
+fastchat/llm_judge/data/japanese_mt_bench/model_judgment/*

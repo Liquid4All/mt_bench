@@ -94,14 +94,14 @@ def load_module(path: str):
 
 
 def register_custom_model(model_path: str, debug: bool):
-    model_file = os.path.join(model_path, 'modeling_liquid_hybrid.py')
+    model_file = os.path.join(model_path, 'modeling_liquid_v1.py')
     if not os.path.isfile(model_file):
         raise FileNotFoundError(f"Modeling file not found: {model_file}")
 
     module = load_module(model_file)
 
-    config_class_name = "LiquidHybridConfig"
-    model_class_name = "LiquidHybridForCausalLM"
+    config_class_name = "LiquidV1Config"
+    model_class_name = "LiquidV1ForCausalLM"
 
     if not hasattr(module, config_class_name):
         raise ImportError(f"Custom config class '{config_class_name}' not found.")
@@ -111,11 +111,11 @@ def register_custom_model(model_path: str, debug: bool):
     custom_config_class = getattr(module, config_class_name)
     custom_model_class = getattr(module, model_class_name)
 
-    AutoConfig.register("liquid_hybrid", custom_config_class)
+    AutoConfig.register("liquid_v1", custom_config_class)
     AutoModel.register(custom_config_class, custom_model_class)
     AutoModelForCausalLM.register(custom_config_class, custom_model_class)
 
-    debug_print(f"Registered custom model architecture 'liquid_hybrid' from {model_path}", debug)
+    debug_print(f"Registered custom model architecture 'liquid_v1' from {model_path}", debug)
 
 
 def is_local_path(path):
