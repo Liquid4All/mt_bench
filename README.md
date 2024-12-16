@@ -61,13 +61,13 @@ For each turn, GPT-4 will give a score on a scale of 10. We then compute the ave
 ```
 export OPENAI_API_KEY=XXXXXX  # set the OpenAI API key
 cd llm_judge
-python gen_judgment.py --model-list [LIST-OF-MODEL-ID] --parallel [num-concurrent-api-call]
+python gen_judgment.py --model-list [LIST-OF-MODEL-ID] --parallel [num-concurrent-api-call] --bench-name japanese_mt_bench
 ```
 
 e.g.,
 ```
 cd llm_judge
-python gen_judgment.py --model-list lfm-3b-jp --parallel 2
+python gen_judgment.py --model-list lfm-3b-jp --parallel 2 --bench-name japanese_mt_bench
 ```
 The judgments will be saved to `data/mt_bench/model_judgment/gpt-4_single.jsonl`
 
