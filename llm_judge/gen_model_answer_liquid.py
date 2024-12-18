@@ -206,6 +206,8 @@ def get_model_answers(
         cpu_offloading=False,
         debug=debug,
     )
+    
+    print(f'using model: {model_path}')
 
     for question in tqdm(questions):
         temperature = 0.7
@@ -227,6 +229,8 @@ def get_model_answers(
             for j, qs in enumerate(question["turns"]):
                 conv.append_message(conv.roles[0], qs)
                 conv.append_message(conv.roles[1], None)
+                #prompt = '以下は、タスクを説明する指示と、文脈のある入力の組み合わせです。要求を適切に満たす応答を書きなさい。\n' + conv.get_prompt()
+                #prompts.append(prompt)
                 prompt = conv.get_prompt()
                 prompts.append(prompt)
 

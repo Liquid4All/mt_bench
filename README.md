@@ -76,7 +76,7 @@ The judgments will be saved to `data/mt_bench/model_judgment/gpt-4_single.jsonl`
 - Show the scores for selected models
   ```
   cd llm_judge
-  python show_result.py --model-list lfm-3b-jp --bench-name japanese_mt_bench --output-file <output_location.json>
+  python show_result.py --model-list lfm-3b-jp --bench-name japanese_mt_bench --output-file <output_location.json> --input-file <input_location.json>
   ```
 ---
 

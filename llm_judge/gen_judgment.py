@@ -245,7 +245,7 @@ if __name__ == "__main__":
             )
         else:
             output_file = (
-                f"data/{args.bench_name}/model_judgment/{args.judge_model}_single_hf.jsonl"
+                f"data/{args.bench_name}/model_judgment/{args.judge_model}_{args.model_list}.jsonl"
             )
         make_match_func = make_match_single
         baseline_model = None
