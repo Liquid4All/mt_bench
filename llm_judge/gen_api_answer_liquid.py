@@ -4,10 +4,11 @@ Usage:
 python3 gen_api_answer.py --model lfm-3b-jp --openai-api-key YOUR_API_KEY --openai-api-base https://inference-1.liquid.ai/v1
 """
 import argparse
+import concurrent.futures
 import json
 import os
 import time
-import concurrent.futures
+from datetime import datetime
 
 import openai
 import shortuuid
@@ -16,11 +17,9 @@ import tqdm
 from llm_judge.common import (
     load_questions,
     chat_completion_openai,
-    chat_completion_anthropic,
-    chat_completion_palm,
 )
 from llm_judge.gen_model_answer import reorg_answer_file
-from model.model_adapter import get_conversation_template, ANTHROPIC_MODEL_LIST
+from model.model_adapter import get_conversation_template
 
 
 def get_answer(
@@ -75,7 +74,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--max-tokens",
         type=int,
-        default=1024,
+        default=512,
         help="The maximum number of new generated tokens.",
     )
     parser.add_argument(
@@ -116,7 +115,9 @@ if __name__ == "__main__":
     if args.answer_file:
         answer_file = args.answer_file
     else:
-        answer_file = f"data/{args.bench_name}/model_answer/{args.model}.jsonl"
+        now = datetime.now()
+        timestamp = now.strftime('%Y%m%d_%H%M%S')
+        answer_file = os.path.join(current_dir, "data", args.bench_name, "model_answer", f"{args.model}-{timestamp}.jsonl")
     print(f"Output to {answer_file}")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.parallel) as executor:
