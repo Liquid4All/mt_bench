@@ -10,18 +10,14 @@ pip install -e ".[model_worker,llm_judge]"
 
 ```bash
 # run eval for lfm-3b-jp
-PYTHONPATH=. python llm_judge/gen_api_answer_liquid.py \
-  --bench-name japanese_mt_bench \
-  --model lfm-3b-jp \
-  --num-choices 5 \
-  --openai-api-key <api-key> \
-  --openai-api-base http://localhost:8000/v1
+bin/api/run_api_eval.sh \
+  --model-name lfm-3b-jp \
+  --model-url http://localhost:8000/v1 \
+  --model-api-key <API-KEY>
 
 # run eval for lfm-3b-ichikara
-PYTHONPATH=. python llm_judge/gen_api_answer_liquid.py \
-  --bench-name japanese_mt_bench \
-  --model lfm-3b-ichikara \
-  --num-choices 5 \
-  --openai-api-key <api-key> \
-  --openai-api-base http://localhost:8000/v1
+bin/api/run_api_eval.sh \
+  --model-name lfm-3b-ichikara \
+  --model-url http://localhost:8000/v1 \
+  --model-api-key <API-KEY>
 ```
