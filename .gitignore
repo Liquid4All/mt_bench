@@ -31,10 +31,10 @@ tests/state_of_the_union.txt
 build
 
 # Ignore
-fastchat/llm_judge/data/*/model_answer/*
-fastchat/llm_judge/data/*/model_judgment/*
-fastchat/llm_judge/data/japanese_mt_bench/misc/
-fastchat/llm_judge/data/japanese_mt_bench/model_answer/*
-fastchat/llm_judge/data/japanese_mt_bench/model_judgment/*
+llm_judge/data/*/model_answer/*
+llm_judge/data/*/model_judgment/*
+llm_judge/data/japanese_mt_bench/misc/
+llm_judge/data/japanese_mt_bench/model_answer/*
+llm_judge/data/japanese_mt_bench/model_judgment/*
 
 utf_8_decoder.py
