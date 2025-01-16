@@ -21,3 +21,7 @@ bin/api/run_api_eval.sh \
   --model-url http://localhost:8000/v1 \
   --model-api-key <API-KEY>
 ```
+
+## Evaluation results
+
+Results will be output under `llm_judge/data/japanese_mt_bench/model_answer`. The filename has patten `<model-name>-<timestamp>.jsonl`.
