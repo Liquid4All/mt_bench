@@ -56,3 +56,25 @@ jobs:
             echo "No output file found in the directory."
             exit 1
           fi
+
+      - name: Run OpenAI Judge
+        env:
+          MODEL_NAME: lfm-3b
+          MODEL_URL: ${{ vars.MODEL_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          bin/api/run_openai_judge.sh \
+            --model-name "$MODEL_NAME" \
+            --model-api-key "$OPENAI_API_KEY" \
+            --parallel 3
+
+      - name: Print Judge JSON File
+        run: |
+          OUTPUT_FILE=$(ls -t llm_judge/data/japanese_mt_bench/model_judgment/*.jsonl | head -n 1)
+          if [ -f "$OUTPUT_FILE" ]; then
+            echo "Output JSON file: $OUTPUT_FILE"
+            cat "$OUTPUT_FILE" | jq
+          else
+            echo "No output file found in the directory."
+            exit 1
+          fi
