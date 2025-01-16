@@ -121,6 +121,7 @@ if __name__ == "__main__":
         timestamp = now.strftime('%Y%m%d_%H%M%S')
         answer_file = os.path.join(current_dir, "data", args.bench_name, "model_answer", f"{args.model}-{timestamp}.jsonl")
     print(f"Output to {answer_file}")
+    print(f"Number of choices: {args.num_choices}")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.parallel) as executor:
         futures = []

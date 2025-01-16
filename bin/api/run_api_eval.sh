@@ -14,7 +14,7 @@ print_usage() {
 MODEL_NAME=""
 MODEL_API_KEY=""
 MODEL_URL=""
-NUM_CHOICES="5"
+NUM_CHOICES="1"
 QUESTION_COUNT=""
 
 while [[ $# -gt 0 ]]; do
@@ -71,10 +71,15 @@ fi
 
 export PYTHONPATH=.
 
-python llm_judge/gen_api_answer_liquid.py \
+cmd=(python llm_judge/gen_api_answer_liquid.py \
   --bench-name japanese_mt_bench \
   --model "$MODEL_NAME" \
   --openai-api-key "$MODEL_API_KEY" \
   --openai-api-base "$MODEL_URL" \
-  --num-choices "$NUM_CHOICES" \
-  --question-end "$QUESTION_COUNT"
+  --num-choices "$NUM_CHOICES")
+
+if [[ -n "$QUESTION_COUNT" ]]; then
+  cmd+=(--question-end "$QUESTION_COUNT")
+fi
+
+"${cmd[@]}"
