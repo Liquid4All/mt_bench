@@ -1,18 +1,20 @@
 #!/bin/bash
 
 print_usage() {
-    echo "Usage: $0 --model-name <model_name> --model-api-key <api_key> --model-url <base_url> --question-count <question_count>"
+    echo "Usage: $0 --model-name <model_name> --model-api-key <api_key> --model-url <base_url> --num-choices <num-choices> --question-count <question_count>"
     echo
     echo "Arguments:"
     echo "  --model-name     Name of the model to evaluate"
     echo "  --model-api-key  API key for model access"
     echo "  --model-url Base URL for the model API"
+    echo "  --num-choices    Number of choices to generate for each question (default to 5)"
     echo "  --question-count Number of questions to evaluate (default to none, which runs all questions)"
 }
 
 MODEL_NAME=""
 MODEL_API_KEY=""
 MODEL_URL=""
+NUM_CHOICES="5"
 QUESTION_COUNT=""
 
 while [[ $# -gt 0 ]]; do
@@ -27,6 +29,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --model-url)
             MODEL_URL="$2"
+            shift 2
+            ;;
+        --num-choices)
+            NUM_CHOICES="$2"
             shift 2
             ;;
         --question-count)
@@ -70,5 +76,5 @@ python llm_judge/gen_api_answer_liquid.py \
   --model "$MODEL_NAME" \
   --openai-api-key "$MODEL_API_KEY" \
   --openai-api-base "$MODEL_URL" \
-  --num-choices 5 \
+  --num-choices "$NUM_CHOICES" \
   --question-end "$QUESTION_COUNT"
