@@ -109,6 +109,7 @@ class MatchPair:
 def load_questions(question_file: str, begin: Optional[int], end: Optional[int]):
     """Load questions from a file."""
     questions = []
+    print(f"Loading questions from {question_file}")
     with open(question_file, "r") as ques_file:
         for line in ques_file:
             if line:
