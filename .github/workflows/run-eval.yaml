@@ -1,0 +1,44 @@
+name: Run API Evaluation
+
+on:
+  workflow_dispatch:
+    inputs:
+      model_url:
+        description: 'The URL of the model API'
+        required: true
+        default: 'http://localhost:8000/v1'
+
+jobs:
+  run-api-eval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up
+        run: |
+          bin/api/prepare.sh
+
+      - name: Run API Evaluation Script
+        env:
+          MODEL_NAME: lfm-3b
+          MODEL_URL: ${{ vars.MODEL_URL }}
+          MODEL_API_KEY: ${{ secrets.MODEL_API_KEY }}
+        run: |
+          bin/api/run_api_eval.sh \
+            --model-name "$MODEL_NAME" \
+            --model-url "$MODEL_URL" \
+            --model-api-key "$MODEL_API_KEY" \
+            --question-count 1
+
+      - name: Print Output JSON File
+        run: |
+          OUTPUT_FILE=$(ls -t llm_judge/data/japanese_mt_bench/model_answer/*.jsonl | head -n 1)
+          if [ -f "$OUTPUT_FILE" ]; then
+            echo "Output JSON file: $OUTPUT_FILE"
+            cat "$OUTPUT_FILE"
+          else
+            echo "No output file found in the directory."
+            exit 1
+          fi
