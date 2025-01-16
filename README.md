@@ -34,9 +34,24 @@ bin/api/run_api_eval.sh \
 | `--num-choices` | Number of responses to generate for each question | `5` | No. Default to 1. |
 | `--question-count` | Number of questions to run | None | No. Default to None, which runs all questions. |
 
-## Evaluation results
+Results will be output under `llm_judge/data/japanese_mt_bench/model_answer`. The filename has pattern `<model-name>.jsonl`.
 
-Results will be output under `llm_judge/data/japanese_mt_bench/model_answer`. The filename has pattern `<model-name>-<timestamp>.jsonl`.
+## Run OpenAI Judgement
+
+```bash
+bin/api/run_openai_judge.sh --model-name lfm-3b-jp --openai-api-key <OPENAI-API-KEY>
+bin/api/run_openai_judge.sh --model-name lfm-3b-ichikara --openai-api-key <OPENAI-API-KEY>
+```
+
+### Arguments
+
+| Argument | Description | Required |
+| --- | --- | --- |
+| `--model-name` | Model name | Yes |
+| `--openai-api-key` | OpenAI API key | Yes |
+| `--parallel` | Number of parallel API calls | No. Default to 5. |
+
+The results are output to `llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_<model-name>.jsonl`.
 
 ## Acknowledgement
 
