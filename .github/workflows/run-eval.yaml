@@ -65,7 +65,7 @@ jobs:
         run: |
           bin/api/run_openai_judge.sh \
             --model-name "$MODEL_NAME" \
-            --model-api-key "$OPENAI_API_KEY" \
+            --openai-api-key "$OPENAI_API_KEY" \
             --parallel 3
 
       - name: Print Judge JSON File

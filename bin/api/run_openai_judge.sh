@@ -35,7 +35,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [[ -z "OPENAI_API_KEY" ]]; then
+if [[ -z "$OPENAI_API_KEY" ]]; then
     echo "Error: --openai-api-key is required"
     print_usage
     exit 1
