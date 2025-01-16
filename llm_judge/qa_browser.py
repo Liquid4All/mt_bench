@@ -9,7 +9,7 @@ import re
 
 import gradio as gr
 
-from fastchat.llm_judge.common import (
+from llm_judge.common import (
     load_questions,
     load_model_answers,
     load_single_model_judgments,

@@ -25,23 +25,23 @@ from transformers import (
     T5Tokenizer,
 )
 
-from fastchat.constants import CPU_ISA
-from fastchat.conversation import Conversation, get_conv_template
-from fastchat.model.compression import load_compress_model
-from fastchat.model.llama_condense_monkey_patch import replace_llama_with_condense
-from fastchat.model.model_chatglm import generate_stream_chatglm
-from fastchat.model.model_codet5p import generate_stream_codet5p
-from fastchat.model.model_falcon import generate_stream_falcon
-from fastchat.model.model_exllama import generate_stream_exllama
-from fastchat.model.model_xfastertransformer import generate_stream_xft
-from fastchat.model.monkey_patch_non_inplace import (
+from constants import CPU_ISA
+from conversation import Conversation, get_conv_template
+from model.compression import load_compress_model
+from model.llama_condense_monkey_patch import replace_llama_with_condense
+from model.model_chatglm import generate_stream_chatglm
+from model.model_codet5p import generate_stream_codet5p
+from model.model_falcon import generate_stream_falcon
+from model.model_exllama import generate_stream_exllama
+from model.model_xfastertransformer import generate_stream_xft
+from model.monkey_patch_non_inplace import (
     replace_llama_attn_with_non_inplace_operations,
 )
-from fastchat.modules.awq import AWQConfig, load_awq_quantized
-from fastchat.modules.exllama import ExllamaConfig, load_exllama_model
-from fastchat.modules.xfastertransformer import load_xft_model, XftConfig
-from fastchat.modules.gptq import GptqConfig, load_gptq_quantized
-from fastchat.utils import get_gpu_memory
+from modules.awq import AWQConfig, load_awq_quantized
+from modules.exllama import ExllamaConfig, load_exllama_model
+from modules.xfastertransformer import load_xft_model, XftConfig
+from modules.gptq import GptqConfig, load_gptq_quantized
+from utils import get_gpu_memory
 
 # Check an environment variable to check if we should be sharing Peft model
 # weights.  When false we treat all Peft models as separate.
@@ -380,7 +380,7 @@ def get_conversation_template(model_path: str) -> Conversation:
 
 def get_generate_stream_function(model: torch.nn.Module, model_path: str):
     """Get the generate_stream function for inference."""
-    from fastchat.serve.inference import generate_stream
+    from serve.inference import generate_stream
 
     model_type = str(type(model)).lower()
     is_peft = "peft" in model_type
@@ -1020,7 +1020,7 @@ class RwkvAdapter(BaseModelAdapter):
         return "rwkv-4" in model_path.lower()
 
     def load_model(self, model_path: str, from_pretrained_kwargs: dict):
-        from fastchat.model.rwkv_model import RwkvModel
+        from model.rwkv_model import RwkvModel
 
         model = RwkvModel(model_path)
         revision = from_pretrained_kwargs.get("revision", "main")

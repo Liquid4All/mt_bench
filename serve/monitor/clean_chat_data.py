@@ -13,12 +13,12 @@ import time
 
 from tqdm import tqdm
 
-from fastchat.serve.monitor.basic_stats import NUM_SERVERS
-from fastchat.serve.monitor.clean_battle_data import (
+from serve.monitor.basic_stats import NUM_SERVERS
+from serve.monitor.clean_battle_data import (
     to_openai_format,
     replace_model_name,
 )
-from fastchat.utils import detect_language
+from utils import detect_language
 
 
 NETWORK_ERROR_MSG = (

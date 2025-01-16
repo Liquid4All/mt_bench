@@ -9,7 +9,7 @@ import json
 import numpy as np
 from tqdm import tqdm
 
-from fastchat.llm_judge.common import (
+from llm_judge.common import (
     load_questions,
     load_model_answers,
     load_judge_prompts,

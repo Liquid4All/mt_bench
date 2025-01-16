@@ -4,7 +4,7 @@ import json
 
 import requests
 
-from fastchat.model.model_adapter import get_conversation_template
+from model.model_adapter import get_conversation_template
 
 
 def main():

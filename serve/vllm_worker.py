@@ -17,12 +17,12 @@ from vllm.engine.arg_utils import AsyncEngineArgs
 from vllm.sampling_params import SamplingParams
 from vllm.utils import random_uuid
 
-from fastchat.serve.base_model_worker import BaseModelWorker
-from fastchat.serve.model_worker import (
+from serve.base_model_worker import BaseModelWorker
+from serve.model_worker import (
     logger,
     worker_id,
 )
-from fastchat.utils import get_context_length, is_partial_stop
+from utils import get_context_length, is_partial_stop
 
 
 app = FastAPI()

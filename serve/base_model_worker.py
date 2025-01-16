@@ -7,9 +7,9 @@ from fastapi import FastAPI, Request, BackgroundTasks
 from fastapi.responses import StreamingResponse, JSONResponse
 import requests
 
-from fastchat.constants import WORKER_HEART_BEAT_INTERVAL
-from fastchat.conversation import Conversation
-from fastchat.utils import pretty_print_semaphore, build_logger
+from constants import WORKER_HEART_BEAT_INTERVAL
+from conversation import Conversation
+from utils import pretty_print_semaphore, build_logger
 
 
 worker = None
@@ -66,8 +66,8 @@ class BaseModelWorker:
         """
         can be overrided to costomize the conversation template for different model workers.
         """
-        from fastchat.conversation import get_conv_template
-        from fastchat.model.model_adapter import get_conversation_template
+        from conversation import get_conv_template
+        from model.model_adapter import get_conversation_template
 
         if conv_template:
             conv = get_conv_template(conv_template)

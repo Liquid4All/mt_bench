@@ -14,8 +14,8 @@ import uuid
 import gradio as gr
 import requests
 
-from fastchat.conversation import SeparatorStyle
-from fastchat.constants import (
+from conversation import SeparatorStyle
+from constants import (
     LOGDIR,
     WORKER_API_TIMEOUT,
     ErrorCode,
@@ -27,18 +27,18 @@ from fastchat.constants import (
     CONVERSATION_TURN_LIMIT,
     SESSION_EXPIRATION_TIME,
 )
-from fastchat.model.model_adapter import (
+from model.model_adapter import (
     get_conversation_template,
     ANTHROPIC_MODEL_LIST,
 )
-from fastchat.model.model_registry import get_model_info, model_info
-from fastchat.serve.api_provider import (
+from model.model_registry import get_model_info, model_info
+from serve.api_provider import (
     anthropic_api_stream_iter,
     openai_api_stream_iter,
     palm_api_stream_iter,
     init_palm_chat,
 )
-from fastchat.utils import (
+from utils import (
     build_logger,
     moderation_filter,
     get_window_url_params_js,

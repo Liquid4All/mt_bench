@@ -19,13 +19,13 @@ import numpy as np
 import requests
 import uvicorn
 
-from fastchat.constants import (
+from constants import (
     CONTROLLER_HEART_BEAT_EXPIRATION,
     WORKER_API_TIMEOUT,
     ErrorCode,
     SERVER_ERROR_MSG,
 )
-from fastchat.utils import build_logger
+from utils import build_logger
 
 
 logger = build_logger("controller", "controller.log")

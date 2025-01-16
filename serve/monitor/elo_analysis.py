@@ -11,9 +11,9 @@ import pandas as pd
 import plotly.express as px
 from tqdm import tqdm
 
-from fastchat.model.model_registry import get_model_info
-from fastchat.serve.monitor.basic_stats import get_log_files
-from fastchat.serve.monitor.clean_battle_data import clean_battle_data
+from model.model_registry import get_model_info
+from serve.monitor.basic_stats import get_log_files
+from serve.monitor.clean_battle_data import clean_battle_data
 
 
 pd.options.display.float_format = "{:.2f}".format

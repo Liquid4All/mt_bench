@@ -16,9 +16,9 @@ import torch
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoConfig, AutoModel, AutoModelForCausalLM
 
-from fastchat.llm_judge.common import load_questions, temperature_config
-from fastchat.model import get_conversation_template
-from fastchat.utils import str_to_torch_dtype, set_seed
+from llm_judge.common import load_questions, temperature_config
+from model import get_conversation_template
+from utils import str_to_torch_dtype, set_seed
 
 
 def debug_print(msg: str, debug: bool):

@@ -6,7 +6,7 @@ import requests
 import threading
 import time
 
-from fastchat.conversation import get_conv_template
+from conversation import get_conv_template
 
 
 def main():

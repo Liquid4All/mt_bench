@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from fastchat.model.model_adapter import (
+from model.model_adapter import (
     get_conversation_template,
     ANTHROPIC_MODEL_LIST,
     OPENAI_MODEL_LIST,
@@ -550,7 +550,7 @@ def chat_completion_anthropic(model, conv, temperature, max_tokens, api_dict=Non
 
 
 def chat_completion_palm(chat_state, model, conv, temperature, max_tokens):
-    from fastchat.serve.api_provider import init_palm_chat
+    from serve.api_provider import init_palm_chat
 
     assert model == "palm-2-chat-bison-001"
 

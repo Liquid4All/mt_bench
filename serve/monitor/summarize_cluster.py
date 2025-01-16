@@ -6,12 +6,12 @@ python3 summarize_cluster.py --in results_c20_kmeans_cluster.pkl --model azure-g
 import argparse
 import pickle
 
-from fastchat.llm_judge.common import (
+from llm_judge.common import (
     chat_completion_openai,
     chat_completion_openai_azure,
     chat_completion_anthropic,
 )
-from fastchat.conversation import get_conv_template
+from conversation import get_conv_template
 
 
 def truncate_string(s, l):

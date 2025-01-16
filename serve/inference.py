@@ -29,17 +29,17 @@ from transformers.generation.logits_process import (
     TopPLogitsWarper,
 )
 
-from fastchat.conversation import get_conv_template, SeparatorStyle
-from fastchat.model.model_adapter import (
+from conversation import get_conv_template, SeparatorStyle
+from model.model_adapter import (
     load_model,
     get_conversation_template,
     get_generate_stream_function,
 )
-from fastchat.modules.awq import AWQConfig
-from fastchat.modules.gptq import GptqConfig
-from fastchat.modules.exllama import ExllamaConfig
-from fastchat.modules.xfastertransformer import XftConfig
-from fastchat.utils import is_partial_stop, is_sentence_complete, get_context_length
+from modules.awq import AWQConfig
+from modules.gptq import GptqConfig
+from modules.exllama import ExllamaConfig
+from modules.xfastertransformer import XftConfig
+from utils import is_partial_stop, is_sentence_complete, get_context_length
 
 
 def prepare_logits_processor(

@@ -5,8 +5,8 @@ import os
 import random
 import time
 
-from fastchat.utils import build_logger
-from fastchat.constants import WORKER_API_TIMEOUT
+from utils import build_logger
+from constants import WORKER_API_TIMEOUT
 
 
 logger = build_logger("gradio_web_server", "gradio_web_server.log")

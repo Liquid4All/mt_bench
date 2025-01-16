@@ -18,10 +18,10 @@ import pandas as pd
 import gradio as gr
 import numpy as np
 
-from fastchat.serve.monitor.basic_stats import report_basic_stats, get_log_files
-from fastchat.serve.monitor.clean_battle_data import clean_battle_data
-from fastchat.serve.monitor.elo_analysis import report_elo_analysis_results
-from fastchat.utils import build_logger, get_window_url_params_js
+from serve.monitor.basic_stats import report_basic_stats, get_log_files
+from serve.monitor.clean_battle_data import clean_battle_data
+from serve.monitor.elo_analysis import report_elo_analysis_results
+from utils import build_logger, get_window_url_params_js
 
 
 notebook_url = (
@@ -372,7 +372,7 @@ You can find more discussions in this blog [post](https://lmsys.org/blog/2023-12
                 )
                 plot_4 = gr.Plot(p4, show_label=False)
 
-    from fastchat.serve.gradio_web_server import acknowledgment_md
+    from serve.gradio_web_server import acknowledgment_md
 
     gr.Markdown(acknowledgment_md)
 
@@ -382,7 +382,7 @@ You can find more discussions in this blog [post](https://lmsys.org/blog/2023-12
 
 
 def build_demo(elo_results_file, leaderboard_table_file):
-    from fastchat.serve.gradio_web_server import block_css
+    from serve.gradio_web_server import block_css
 
     text_size = gr.themes.sizes.text_lg
 

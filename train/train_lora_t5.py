@@ -35,14 +35,14 @@ import transformers
 from torch.utils.data import Dataset
 from transformers import Trainer, AddedToken, BitsAndBytesConfig, deepspeed
 
-from fastchat.train.train_flant5 import (
+from train.train_flant5 import (
     smart_tokenizer_and_embedding_resize,
     make_supervised_data_module,
 )
 
-from fastchat.train.train_lora import get_peft_state_maybe_zero_3
+from train.train_lora import get_peft_state_maybe_zero_3
 
-from fastchat.model.model_adapter import get_conversation_template
+from model.model_adapter import get_conversation_template
 
 default_conversation = get_conversation_template("t5")
 

@@ -9,14 +9,14 @@ import time
 import gradio as gr
 import numpy as np
 
-from fastchat.constants import (
+from constants import (
     MODERATION_MSG,
     CONVERSATION_LIMIT_MSG,
     INPUT_CHAR_LEN_LIMIT,
     CONVERSATION_TURN_LIMIT,
 )
-from fastchat.model.model_adapter import get_conversation_template
-from fastchat.serve.gradio_web_server import (
+from model.model_adapter import get_conversation_template
+from serve.gradio_web_server import (
     State,
     bot_response,
     get_conv_log_filename,
@@ -29,7 +29,7 @@ from fastchat.serve.gradio_web_server import (
     ip_expiration_dict,
     get_ip,
 )
-from fastchat.utils import (
+from utils import (
     build_logger,
     moderation_filter,
 )

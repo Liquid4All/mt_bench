@@ -17,7 +17,7 @@ from sklearn.cluster import KMeans, AgglomerativeClustering
 import torch
 from tqdm import tqdm
 
-from fastchat.utils import detect_language
+from utils import detect_language
 
 
 def remove_punctuation(input_string):
