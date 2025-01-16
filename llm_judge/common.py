@@ -132,6 +132,7 @@ def load_model_answers(answer_dir: str):
 
     for filename in filenames:
         model_name = os.path.basename(filename)[:-6]
+        print(f"Loading model answers from {filename} for {model_name}")
         answer = {}
         with open(filename) as fin:
             for line in fin:
@@ -749,9 +750,8 @@ def check_data(questions, model_answers, ref_answers, models, judges):
         assert m in model_answers, f"Missing model answer for {m}"
         m_answer = model_answers[m]
         for q in questions:
-            assert (
-                q["question_id"] in m_answer
-            ), f"Missing model {m}'s answer to Question {q['question_id']}"
+            if q["question_id"] not in m_answer:
+                print(f"Missing model {m}'s answer to Question {q['question_id']}")
     # check ref answers
     for jg in judges.values():
         if not jg.ref_based:

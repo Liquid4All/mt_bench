@@ -8,7 +8,6 @@ import concurrent.futures
 import json
 import os
 import time
-from datetime import datetime
 
 import openai
 import shortuuid
@@ -117,9 +116,7 @@ if __name__ == "__main__":
     if args.answer_file:
         answer_file = args.answer_file
     else:
-        now = datetime.now()
-        timestamp = now.strftime('%Y%m%d_%H%M%S')
-        answer_file = os.path.join(current_dir, "data", args.bench_name, "model_answer", f"{args.model}-{timestamp}.jsonl")
+        answer_file = os.path.join(current_dir, "data", args.bench_name, "model_answer", f"{args.model}.jsonl")
     print(f"Output to {answer_file}")
     print(f"Number of choices: {args.num_choices}")
 
