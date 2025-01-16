@@ -1,12 +1,17 @@
 name: Run API Evaluation
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
-    inputs:
-      model_url:
-        description: 'The URL of the model API'
-        required: true
-        default: 'http://localhost:8000/v1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   run-api-eval:
