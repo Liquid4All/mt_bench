@@ -25,3 +25,8 @@ bin/api/run_api_eval.sh \
 ## Evaluation results
 
 Results will be output under `llm_judge/data/japanese_mt_bench/model_answer`. The filename has pattern `<model-name>-<timestamp>.jsonl`.
+
+## Acknowledgement
+
+This repository is modified from [`FastChat
+/fastchat`](https://github.com/lm-sys/FastChat/tree/main/fastchat).
