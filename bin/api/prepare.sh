@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pip install -e ".[model_worker,llm_judge]"
+pip install -e ".[llm_judge]"
