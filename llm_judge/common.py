@@ -114,7 +114,9 @@ def load_questions(question_file: str, begin: Optional[int], end: Optional[int])
         for line in ques_file:
             if line:
                 questions.append(json.loads(line))
+    total_questions = len(questions)
     questions = questions[begin:end]
+    print(f"Loaded {len(questions)} questions (total {total_questions}).")
     return questions
 
 
