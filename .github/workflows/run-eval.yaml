@@ -46,12 +46,22 @@ jobs:
             --num-choices 1 \
             --question-count 1
 
-      - name: Print Output JSON File
+      - name: Process Model Answers
         run: |
           OUTPUT_FILE=$(ls -t llm_judge/data/japanese_mt_bench/model_answer/*.jsonl | head -n 1)
           if [ -f "$OUTPUT_FILE" ]; then
             echo "Output JSON file: $OUTPUT_FILE"
+            # Print to console with jq
             cat "$OUTPUT_FILE" | jq
+
+            # Write to workflow summary
+            echo "# Model Answers" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Output file: \`$OUTPUT_FILE\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+            cat "$OUTPUT_FILE" | jq . >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           else
             echo "No output file found in the directory."
             exit 1
@@ -68,12 +78,22 @@ jobs:
             --openai-api-key "$OPENAI_API_KEY" \
             --parallel 3
 
-      - name: Print Judge JSON File
+      - name: Process Judge Results
         run: |
           OUTPUT_FILE=$(ls -t llm_judge/data/japanese_mt_bench/model_judgment/*.jsonl | head -n 1)
           if [ -f "$OUTPUT_FILE" ]; then
             echo "Output JSON file: $OUTPUT_FILE"
+            # Print to console with jq
             cat "$OUTPUT_FILE" | jq
+
+            # Write to workflow summary
+            echo "# Judge Results" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Output file: \`$OUTPUT_FILE\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+            cat "$OUTPUT_FILE" | jq . >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           else
             echo "No output file found in the directory."
             exit 1
