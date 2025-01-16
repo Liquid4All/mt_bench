@@ -35,6 +35,7 @@ jobs:
             --model-name "$MODEL_NAME" \
             --model-url "$MODEL_URL" \
             --model-api-key "$MODEL_API_KEY" \
+            --num-choices 1 \
             --question-count 1
 
       - name: Print Output JSON File
