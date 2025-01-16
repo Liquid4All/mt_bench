@@ -3,7 +3,7 @@
 ## Install
 
 ```bash
-pip install -e ".[model_worker,llm_judge]"
+bin/api/prepare.sh
 ```
 
 ## Run Evaluation
