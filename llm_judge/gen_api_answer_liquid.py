@@ -101,8 +101,10 @@ if __name__ == "__main__":
     print(f"Using model: {args.model}")
     if "liquid.ai" in args.openai_api_base:
         print("Using LiquidAI API.")
+    elif "localhost" in args.openai_api_base:
+        print("Using on-prem API.")
     else:
-        print("Using OpenAI API.")
+        print("Using external API.")
 
     # Configure OpenAI API
     openai.api_key = args.openai_api_key
