@@ -51,7 +51,7 @@ jobs:
           OUTPUT_FILE=$(ls -t llm_judge/data/japanese_mt_bench/model_answer/*.jsonl | head -n 1)
           if [ -f "$OUTPUT_FILE" ]; then
             echo "Output JSON file: $OUTPUT_FILE"
-            cat "$OUTPUT_FILE"
+            cat "$OUTPUT_FILE" | jq
           else
             echo "No output file found in the directory."
             exit 1
