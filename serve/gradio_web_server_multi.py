@@ -9,20 +9,20 @@ import time
 
 import gradio as gr
 
-from fastchat.constants import (
+from constants import (
     SESSION_EXPIRATION_TIME,
 )
-from fastchat.serve.gradio_block_arena_anony import (
+from serve.gradio_block_arena_anony import (
     build_side_by_side_ui_anony,
     load_demo_side_by_side_anony,
     set_global_vars_anony,
 )
-from fastchat.serve.gradio_block_arena_named import (
+from serve.gradio_block_arena_named import (
     build_side_by_side_ui_named,
     load_demo_side_by_side_named,
     set_global_vars_named,
 )
-from fastchat.serve.gradio_web_server import (
+from serve.gradio_web_server import (
     set_global_vars,
     block_css,
     build_single_model_ui,
@@ -32,8 +32,8 @@ from fastchat.serve.gradio_web_server import (
     ip_expiration_dict,
     get_ip,
 )
-from fastchat.serve.monitor.monitor import build_leaderboard_tab
-from fastchat.utils import (
+from serve.monitor.monitor import build_leaderboard_tab
+from utils import (
     build_logger,
     get_window_url_params_js,
     get_window_url_params_with_tos_js,

@@ -8,7 +8,7 @@ import argparse
 
 import numpy as np
 
-from fastchat.serve.monitor.monitor import load_leaderboard_table_csv
+from serve.monitor.monitor import load_leaderboard_table_csv
 
 
 def model_hyperlink(model_name, link):

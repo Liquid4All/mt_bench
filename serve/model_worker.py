@@ -14,18 +14,18 @@ import torch.nn.functional as F
 from transformers import set_seed
 import uvicorn
 
-from fastchat.constants import ErrorCode, SERVER_ERROR_MSG
-from fastchat.model.model_adapter import (
+from constants import ErrorCode, SERVER_ERROR_MSG
+from model.model_adapter import (
     load_model,
     add_model_args,
     get_generate_stream_function,
 )
-from fastchat.modules.awq import AWQConfig
-from fastchat.modules.exllama import ExllamaConfig
-from fastchat.modules.xfastertransformer import XftConfig
-from fastchat.modules.gptq import GptqConfig
-from fastchat.serve.base_model_worker import BaseModelWorker, app
-from fastchat.utils import (
+from modules.awq import AWQConfig
+from modules.exllama import ExllamaConfig
+from modules.xfastertransformer import XftConfig
+from modules.gptq import GptqConfig
+from serve.base_model_worker import BaseModelWorker, app
+from utils import (
     build_logger,
     get_context_length,
     str_to_torch_dtype,

@@ -45,8 +45,8 @@ class RwkvModel:
         # we reuse fastchat.serve.inference.generate_stream as a workaround.
         from transformers import AutoTokenizer
 
-        from fastchat.serve.inference import generate_stream
-        from fastchat.conversation import get_conv_template
+        from serve.inference import generate_stream
+        from conversation import get_conv_template
 
         if self.tokenizer is None:
             self.tokenizer = AutoTokenizer.from_pretrained(

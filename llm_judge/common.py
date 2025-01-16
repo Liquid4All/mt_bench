@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from fastchat.model.model_adapter import (
+from model.model_adapter import (
     get_conversation_template,
     ANTHROPIC_MODEL_LIST,
     OPENAI_MODEL_LIST,
@@ -109,11 +109,14 @@ class MatchPair:
 def load_questions(question_file: str, begin: Optional[int], end: Optional[int]):
     """Load questions from a file."""
     questions = []
+    print(f"Loading questions from {question_file}")
     with open(question_file, "r") as ques_file:
         for line in ques_file:
             if line:
                 questions.append(json.loads(line))
+    total_questions = len(questions)
     questions = questions[begin:end]
+    print(f"Loaded {len(questions)} questions (total {total_questions}).")
     return questions
 
 
@@ -550,7 +553,7 @@ def chat_completion_anthropic(model, conv, temperature, max_tokens, api_dict=Non
 
 
 def chat_completion_palm(chat_state, model, conv, temperature, max_tokens):
-    from fastchat.serve.api_provider import init_palm_chat
+    from serve.api_provider import init_palm_chat
 
     assert model == "palm-2-chat-bison-001"
 

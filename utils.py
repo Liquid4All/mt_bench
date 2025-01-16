@@ -16,7 +16,7 @@ import torch
 import numpy as np
 import requests
 
-from fastchat.constants import LOGDIR
+from constants import LOGDIR
 
 
 handler = None

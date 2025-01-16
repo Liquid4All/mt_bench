@@ -13,8 +13,8 @@ import time
 
 from tqdm import tqdm
 
-from fastchat.serve.monitor.basic_stats import get_log_files, NUM_SERVERS
-from fastchat.utils import detect_language
+from serve.monitor.basic_stats import get_log_files, NUM_SERVERS
+from utils import detect_language
 
 
 VOTES = ["tievote", "leftvote", "rightvote", "bothbad_vote"]

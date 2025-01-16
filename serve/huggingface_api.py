@@ -9,7 +9,7 @@ import argparse
 
 import torch
 
-from fastchat.model import load_model, get_conversation_template, add_model_args
+from model import load_model, get_conversation_template, add_model_args
 
 
 @torch.inference_mode()
