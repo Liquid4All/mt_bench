@@ -8,6 +8,10 @@ bin/api/prepare.sh
 
 ## Run Evaluation
 
+To run the evaluation locally, first launch the on-prem stack following the instruction.
+
+Run the following commands to launch the evaluation:
+
 ```bash
 # run eval for lfm-3b-jp
 bin/api/run_api_eval.sh \
