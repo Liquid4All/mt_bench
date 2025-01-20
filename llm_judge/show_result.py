@@ -50,25 +50,40 @@ def display_result_single(args):
         else:
             df_cat = df[["model", "score", "turn"]]
         df_1 = df_cat[df_cat["turn"] == 1].groupby("model")["score"].apply(calculate_averages)
-        print(df_1)
         for model_id in args.model_list:
-            result[model_id][category] = dict()
-            result[model_id][category]["first_turn"] = dict()
-            result[model_id][category]["first_turn"]["score"] = float(df_1.loc[model_id][0])
-            result[model_id][category]["first_turn"]["new_variance"] = float(df_1.loc[model_id][1])
+            try:
+                result[model_id][category] = dict()
+                result[model_id][category]["first_turn"] = dict()
+                result[model_id][category]["first_turn"]["score"] = float(df_1.loc[model_id][0])
+                result[model_id][category]["first_turn"]["new_variance"] = float(df_1.loc[model_id][1])
+            except KeyError as error_1:
+                if args.ci:
+                    # ignore in ci run, which does not have the full data
+                    continue
+                raise error_1
         if args.bench_name == "mt_bench" or args.bench_name == "japanese_mt_bench":
             df_2 = df_cat[df_cat["turn"] == 2].groupby("model")["score"].apply(calculate_averages)
-            print(df_2)
             for model_id in args.model_list:
-                result[model_id][category]["second_turn"] = dict()
-                result[model_id][category]["second_turn"]["score"] = float(df_2.loc[model_id][0])
-                result[model_id][category]["second_turn"]["new_variance"] = float(df_2.loc[model_id][1])
+                try:
+                    result[model_id][category]["second_turn"] = dict()
+                    result[model_id][category]["second_turn"]["score"] = float(df_2.loc[model_id][0])
+                    result[model_id][category]["second_turn"]["new_variance"] = float(df_2.loc[model_id][1])
+                except KeyError as error_2:
+                    if args.ci:
+                        # ignore in ci run, which does not have the full data
+                        continue
+                    raise error_2
             df_3 = df_cat.groupby("model")["score"].apply(calculate_averages)
-            print(df_3)
             for model_id in args.model_list:
-                result[model_id][category]["average"] = dict()
-                result[model_id][category]["average"]["score"] = float(df_3.loc[model_id][0])
-                result[model_id][category]["average"]["new_variance"] = float(df_3.loc[model_id][1])
+                try:
+                    result[model_id][category]["average"] = dict()
+                    result[model_id][category]["average"]["score"] = float(df_3.loc[model_id][0])
+                    result[model_id][category]["average"]["new_variance"] = float(df_3.loc[model_id][1])
+                except KeyError as error_3:
+                    if args.ci:
+                        # ignore in ci run, which does not have the full data
+                        continue
+                    raise error_3
 
     for category in ["overall"] + CATEGORIES_ordered:
         score_category(category)
@@ -77,16 +92,23 @@ def display_result_single(args):
     for model_id in args.model_list:
         result[model_id]["result"] = dict()
         for turn in ["first_turn", "second_turn", "average"]:
-            result[model_id]["result"][turn] = dict()
-            result[model_id]["result"][turn]["score"] = ",".join(
-                [f"{(result[model_id][category][turn]['score'] / 10):.4f}" for category in ["overall"] + CATEGORIES_ordered]
-            )
-            result[model_id]["result"][turn]["new_variance"] = ",".join(
-                [f"{result[model_id][category][turn]['new_variance']:.4f}" for category in ["overall"] + CATEGORIES_ordered]
-            )
+            try:
+                result[model_id]["result"][turn] = dict()
+                result[model_id]["result"][turn]["score"] = ",".join(
+                    [f"{(result[model_id][category][turn]['score'] / 10):.4f}" for category in ["overall"] + CATEGORIES_ordered]
+                )
+                result[model_id]["result"][turn]["new_variance"] = ",".join(
+                    [f"{result[model_id][category][turn]['new_variance']:.4f}" for category in ["overall"] + CATEGORIES_ordered]
+                )
+            except KeyError as error:
+                if args.ci:
+                    # ignore in ci run, which does not have the full data
+                    continue
+                raise error
 
     if args.output_file is not None:
         with open(args.output_file, "w") as f:
+            print(f"Output file: {args.output_file}")
             json.dump(result, f, indent=4)
 
 
@@ -173,6 +195,7 @@ if __name__ == "__main__":
         help="Did you use Azure API instead of openai when generating the judgment?",
         default=True,
     )
+    parser.add_argument("--ci", type=bool, default=False)
     args = parser.parse_args()
 
     args.model_list = [model_name.replace("/", "_") for model_name in args.model_list]

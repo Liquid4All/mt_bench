@@ -12,6 +12,7 @@ print_usage() {
 OPENAI_API_KEY=""
 MODEL_NAME=""
 PARALLEL="5"
+CI="false"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -25,6 +26,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --parallel)
             PARALLEL="$2"
+            shift 2
+            ;;
+        --ci)
+            CI="$2"
             shift 2
             ;;
         *)
@@ -56,6 +61,7 @@ python llm_judge/gen_judgment.py \
   --bench-name japanese_mt_bench
 
 python llm_judge/show_result.py --model-list "$MODEL_NAME" \
+  --ci "$CI" \
   --bench-name japanese_mt_bench \
   --input-file llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_$MODEL_NAME.jsonl \
   --output llm_judge/data/japanese_mt_bench/gpt4-score-$MODEL_NAME.json

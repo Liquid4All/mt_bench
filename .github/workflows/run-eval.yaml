@@ -79,6 +79,8 @@ jobs:
             --parallel 3
 
       - name: Process Judge Results
+        env:
+          CI: true
         run: |
           OUTPUT_FILE=$(ls -t llm_judge/data/japanese_mt_bench/model_judgment/*.jsonl | head -n 1)
           if [ -f "$OUTPUT_FILE" ]; then
