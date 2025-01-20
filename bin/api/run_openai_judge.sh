@@ -54,3 +54,8 @@ python llm_judge/gen_judgment.py \
   --model-list "$MODEL_NAME" \
   --parallel "$PARALLEL" \
   --bench-name japanese_mt_bench
+
+python llm_judge/show_result.py --model-list "$MODEL_NAME" \
+  --bench-name japanese_mt_bench \
+  --input-file llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_$MODEL_NAME.jsonl \
+  --output llm_judge/data/japanese_mt_bench/gpt4-score-$MODEL_NAME.json

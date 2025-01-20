@@ -40,12 +40,18 @@ bin/api/run_api_eval.sh \
 
 Results will be output under `llm_judge/data/japanese_mt_bench/model_answer`. The filename has pattern `<model-name>.jsonl`.
 
-## Run OpenAI Judgement
+## Get OpenAI Judgement Scores
+
+The following scripts will generate GPT-4 judgement scores for the models.
 
 ```bash
 bin/api/run_openai_judge.sh --model-name lfm-3b-jp --openai-api-key <OPENAI-API-KEY>
 bin/api/run_openai_judge.sh --model-name lfm-3b-ichikara --openai-api-key <OPENAI-API-KEY>
 ```
+
+GPT judge results will be output under `llm_judge/data/japanese_mt_bench/model_judgment`. The filename has pattern `gpt-4_<model-name>.jsonl`.
+
+The final scores will be output in `data/japanese_mt_bench/gpt4-score-<model-name>.json`.
 
 ### Arguments
 
