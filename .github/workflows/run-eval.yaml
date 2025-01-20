@@ -110,25 +110,31 @@ jobs:
           import glob
 
           def create_model_table(data):
-              # Get the model name (first key in the object)
-              model_name = next(iter(data))
-              model_data = data[model_name]
+            # Get the model name (first key in the object)
+            model_name = next(iter(data))
+            model_data = data[model_name]
 
-              # Get all category names (excluding 'result' field)
-              categories = [key for key in model_data.keys() if key != 'result']
+            # Get all category names (excluding 'result' field)
+            categories = [key for key in model_data.keys() if key != 'result']
 
-              # Generate markdown table
-              markdown = f'## `{model_name}`\n\n'
+            # Generate markdown table
+            markdown = f'## `{model_name}`\n\n'
 
-              # Create table header
-              markdown += '| ' + ' | '.join(categories) + ' |\n'
-              markdown += '| ' + ' | '.join(['---'] * len(categories)) + ' |\n'
+            # Create table header
+            markdown += '| ' + ' | '.join(categories) + ' |\n'
+            markdown += '| ' + ' | '.join(['---'] * len(categories)) + ' |\n'
 
-              # Create table row with average scores
-              scores = [f"{model_data[category]['average']['score']:.2f}" for category in categories]
-              markdown += '| ' + ' | '.join(scores) + ' |\n\n'
+            # Create table row with average scores
+            scores = []
+            for category in categories:
+              avg_data = model_data[category].get('average', {})
+              if avg_data and 'score' in avg_data:
+                scores.append(f"{avg_data['score']:.2f}")
+              else:
+                scores.append('')
+            markdown += '| ' + ' | '.join(scores) + ' |\n\n'
 
-              return markdown
+            return markdown
 
           # Start the markdown content
           markdown_content = '# Scores\n\n'
@@ -140,14 +146,14 @@ jobs:
           json_files.sort()
 
           for json_file in json_files:
-              try:
-                  with open(json_file, 'r') as f:
-                      data = json.load(f)
-                      markdown_content += create_model_table(data)
-              except Exception as e:
-                  print(f"Error processing {json_file}: {str(e)}")
+            try:
+              with open(json_file, 'r') as f:
+                data = json.load(f)
+                markdown_content += create_model_table(data)
+            except Exception as e:
+              print(f"Error processing {json_file}: {str(e)}")
 
           # Write to GITHUB_STEP_SUMMARY
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
-              f.write(markdown_content)
+            f.write(markdown_content)
           EOF
