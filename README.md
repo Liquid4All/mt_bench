@@ -2,6 +2,15 @@
 
 ## Install
 
+It is recommended to create a brand new `conda` environment first. But this step is optional.
+
+```bash
+conda create -n mt_bench python=3.10
+conda activate mt_bench
+```
+
+Run the following command to set up the environment and install the dependencies:
+
 ```bash
 bin/api/prepare.sh
 ```
@@ -28,6 +37,10 @@ bin/api/run_api_eval.sh \
   --num-choices 5
 ```
 
+<details>
+
+<summary>(click to see more details about the evaluation script)</summary>
+
 ### Arguments
 
 | Argument | Description | Value for on-prem stack | Required |
@@ -39,6 +52,8 @@ bin/api/run_api_eval.sh \
 | `--question-count` | Number of questions to run | None | No. Default to None, which runs all questions. |
 
 Results will be output under `llm_judge/data/japanese_mt_bench/model_answer`. The filename has pattern `<model-name>.jsonl`.
+
+</details>
 
 ## Get OpenAI Judgement Scores
 
@@ -53,6 +68,10 @@ GPT judge results will be output under `llm_judge/data/japanese_mt_bench/model_j
 
 The final scores will be output in `data/japanese_mt_bench/gpt4-score-<model-name>.json`.
 
+<details>
+
+<summary>(click to see more details about the evaluation script)</summary>
+
 ### Arguments
 
 | Argument | Description | Required |
@@ -62,6 +81,8 @@ The final scores will be output in `data/japanese_mt_bench/gpt4-score-<model-nam
 | `--parallel` | Number of parallel API calls | No. Default to 5. |
 
 The results are output to `llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_<model-name>.jsonl`.
+
+</details>
 
 ## Acknowledgement
 
