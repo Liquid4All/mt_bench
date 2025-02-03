@@ -17,24 +17,42 @@ bin/api/prepare.sh
 
 ## Run Evaluation
 
-To run the evaluation locally, first launch the on-prem stack following the instruction.
-
-Run the following commands to launch the evaluation:
+Run the `bin/api/run_api_eval.sh` script with following arguments. Results will be output in `llm_judge/data/japanese_mt_bench/model_answer/<model-name>.jsonl`.
 
 ```bash
-# run eval for lfm-3b-jp
+bin/api/run_api_eval.sh \
+  --model-name <model-name> \
+  --model-url <model-url> \
+  --model-api-key <API-KEY>
+```
+
+### Examples
+
+Run evaluation for `lfm-3b-jp` on-prem:
+
+```bash
 bin/api/run_api_eval.sh \
   --model-name lfm-3b-jp \
   --model-url http://localhost:8000/v1 \
-  --model-api-key <API-KEY> \
-  --num-choices 5
+  --model-api-key <API-KEY>
+```
 
-# run eval for lfm-3b-ichikara
+Run eval for `lfm-3b-ichikara` on-prem:
+
+```bash
 bin/api/run_api_eval.sh \
   --model-name lfm-3b-ichikara \
   --model-url http://localhost:8000/v1 \
-  --model-api-key <API-KEY> \
-  --num-choices 5
+  --model-api-key <API-KEY>
+```
+
+Run eval for `lfm-3b-jp` on `labs`:
+
+```bash
+bin/api/run_api_eval.sh \
+  --model-name lfm-3b-jp \
+  --model-url https://inference-1.liquid.ai/v1 \
+  --model-api-key <API-KEY>
 ```
 
 <details>
@@ -48,10 +66,8 @@ bin/api/run_api_eval.sh \
 | `--model-name` | Model name | `lfm-3b-jp`, `lfm-3b-ichikara` | Yes |
 | `--model-url` | Model URL | `http://localhost:8000/v1` | Yes |
 | `--model-api-key` | API key for the model | `API_SECRET` in `.env` | Yes |
-| `--num-choices` | Number of responses to generate for each question | `5` | No. Default to 1. |
+| `--num-choices` | Number of responses to generate for each question | `5` | No. Default to 5. |
 | `--question-count` | Number of questions to run | None | No. Default to None, which runs all questions. |
-
-Results will be output under `llm_judge/data/japanese_mt_bench/model_answer`. The filename has pattern `<model-name>.jsonl`.
 
 </details>
 
@@ -60,13 +76,16 @@ Results will be output under `llm_judge/data/japanese_mt_bench/model_answer`. Th
 The following scripts will generate GPT-4 judgement scores for the models.
 
 ```bash
+bin/api/run_openai_judge.sh --model-name <model-name> --openai-api-key <OPENAI-API-KEY>
+
+# examples:
 bin/api/run_openai_judge.sh --model-name lfm-3b-jp --openai-api-key <OPENAI-API-KEY>
 bin/api/run_openai_judge.sh --model-name lfm-3b-ichikara --openai-api-key <OPENAI-API-KEY>
 ```
 
-GPT judge results will be output under `llm_judge/data/japanese_mt_bench/model_judgment`. The filename has pattern `gpt-4_<model-name>.jsonl`.
+GPT judge results will be output to `llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_<model-name>.jsonl`.
 
-The final scores will be output in `data/japanese_mt_bench/gpt4-score-<model-name>.json`.
+The final scores will be output in `llm_judge/data/japanese_mt_bench/gpt4-score-<model-name>.json`.
 
 <details>
 
