@@ -14,7 +14,7 @@ print_usage() {
 MODEL_NAME=""
 MODEL_API_KEY="placeholder"
 MODEL_URL=""
-NUM_CHOICES="1"
+NUM_CHOICES="5"
 QUESTION_COUNT=""
 
 while [[ $# -gt 0 ]]; do
