@@ -37,7 +37,7 @@ done
 
 # Build the Docker image using Dockerfile from bin/api
 echo "Building Docker image liquidai/mt-bench:latest..."
-docker build $NO_CACHE -t liquidai/mt-bench:latest -f bin/api/Dockerfile.mt_bench .
+docker build $NO_CACHE -t liquidai/mt-bench:latest -f bin/api/Dockerfile .
 
 # Check if build was successful
 if [ $? -eq 0 ]; then
