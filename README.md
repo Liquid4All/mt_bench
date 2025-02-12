@@ -1,6 +1,86 @@
 # Run Evaluation through vLLM API
 
-## Install
+## Overview
+
+1. Run the model through vLLM with an OpenAI compatible API.
+  - For Liquid models, run the on-prem stack, or use Liquid [`labs`](https://labs.liquid.ai).
+  - For other models, use the `run-vllm.sh` script, or use 3rd party providers.
+2. Run the evaluation script with the model API endpoint and API key.
+  - The evaluation can be run with Docker (recommended) or locally without Docker.
+
+## Run Evaluation with Docker
+
+1. Generate model answers:
+
+```bash
+bin/api/run_docker_eval.sh generate \
+  --model-name <model-name> \
+  --model-url <model-url> \
+  --model-api-key <model-api-key>
+```
+
+Results will be output in `llm_judge/data/japanese_mt_bench/model_answer/<model-name>.jsonl`
+
+2. Run OpenAI judge:
+
+```bash
+bin/api/run_docker_eval.sh judge \
+  --model-name <model-name> \
+  --openai-api-key <openai-api-key>
+```
+
+GPT judge results will be output to `llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_<model-name>.jsonl`.
+
+The final scores will be output in `llm_judge/data/japanese_mt_bench/gpt4-score-<model-name>.json`.
+
+### Examples
+
+Run evaluation for `lfm-3b-jp` on-prem:
+
+```bash
+bin/api/run_docker_eval.sh generate \
+  --model-name lfm-3b-jp \
+  --model-url http://localhost:8000/v1 \
+  --model-api-key <ON-PREM-API-SECRET>
+
+bin/api/run_docker_eval.sh judge \
+  --model-name lfm-3b-jp \
+  --openai-api-key <OPENAI-API-KEY>
+```
+
+Run eval for `lfm-3b-ichikara` on-prem:
+
+```bash
+bin/api/run_docker_eval.sh generate \
+  --model-name lfm-3b-ichikara \
+  --model-url http://localhost:8000/v1 \
+  --model-api-key <ON-PREM-API-SECRET>
+
+bin/api/run_docker_eval.sh judge \
+  --model-name lfm-3b-ichikara \
+  --openai-api-key <OPENAI-API-KEY>
+```
+
+Run eval for `lfm-3b-jp` on `labs`:
+
+```bash
+bin/api/run_docker_eval.sh generate \
+  --model-name lfm-3b-jp \
+  --model-url https://inference-1.liquid.ai/v1 \
+  --model-api-key <API-KEY>
+
+bin/api/run_docker_eval.sh judge \
+  --model-name lfm-3b-jp \
+  --openai-api-key <OPENAI-API-KEY>
+```
+
+## Run Evaluation without Docker
+
+<details>
+
+<summary>(click to see details)</summary>
+
+### Install
 
 It is recommended to create a brand new `conda` environment first. But this step is optional.
 
@@ -15,9 +95,9 @@ Run the following command to set up the environment and install the dependencies
 bin/api/prepare.sh
 ```
 
-## Run Evaluation
+### Run Evaluation
 
-Run the `bin/api/run_api_eval.sh` script with following arguments. Results will be output in `llm_judge/data/japanese_mt_bench/model_answer/<model-name>.jsonl`.
+1. Run `bin/api/run_api_eval.sh` script to generate model answers.
 
 ```bash
 bin/api/run_api_eval.sh \
@@ -26,54 +106,9 @@ bin/api/run_api_eval.sh \
   --model-api-key <API-KEY>
 ```
 
-### Examples
+Results will be output in `llm_judge/data/japanese_mt_bench/model_answer/<model-name>.jsonl`.
 
-Run evaluation for `lfm-3b-jp` on-prem:
-
-```bash
-bin/api/run_api_eval.sh \
-  --model-name lfm-3b-jp \
-  --model-url http://localhost:8000/v1 \
-  --model-api-key <API-KEY>
-```
-
-Run eval for `lfm-3b-ichikara` on-prem:
-
-```bash
-bin/api/run_api_eval.sh \
-  --model-name lfm-3b-ichikara \
-  --model-url http://localhost:8000/v1 \
-  --model-api-key <API-KEY>
-```
-
-Run eval for `lfm-3b-jp` on `labs`:
-
-```bash
-bin/api/run_api_eval.sh \
-  --model-name lfm-3b-jp \
-  --model-url https://inference-1.liquid.ai/v1 \
-  --model-api-key <API-KEY>
-```
-
-<details>
-
-<summary>(click to see more details about the evaluation script)</summary>
-
-### Arguments
-
-| Argument | Description | Value for on-prem stack | Required |
-| --- | --- | --- | --- |
-| `--model-name` | Model name | `lfm-3b-jp`, `lfm-3b-ichikara` | Yes |
-| `--model-url` | Model URL | `http://localhost:8000/v1` | Yes |
-| `--model-api-key` | API key for the model | `API_SECRET` in `.env` | Yes |
-| `--num-choices` | Number of responses to generate for each question | `5` | No. Default to 5. |
-| `--question-count` | Number of questions to run | None | No. Default to None, which runs all questions. |
-
-</details>
-
-## Get OpenAI Judgement Scores
-
-The following scripts will generate GPT-4 judgement scores for the models.
+2. Run the following scripts to generate GPT-4 judgement scores for the model answers.
 
 ```bash
 bin/api/run_openai_judge.sh --model-name <model-name> --openai-api-key <OPENAI-API-KEY>
@@ -87,19 +122,35 @@ GPT judge results will be output to `llm_judge/data/japanese_mt_bench/model_judg
 
 The final scores will be output in `llm_judge/data/japanese_mt_bench/gpt4-score-<model-name>.json`.
 
+</details>
+
+## Script Parameters
+
 <details>
 
-<summary>(click to see more details about the evaluation script)</summary>
+<summary>(click to see details)</summary>
 
-### Arguments
+### Generate Script Params
+
+This applies to both `bin/api/run_docker_eval.sh generate` and `bin/api/run_api_eval.sh`.
+
+| Argument | Description | Value for on-prem stack | Required |
+| --- | --- | --- | --- |
+| `--model-name` | Model name | `lfm-3b-jp`, `lfm-3b-ichikara` | Yes |
+| `--model-url` | Model URL | `http://localhost:8000/v1` | Yes |
+| `--model-api-key` | API key for the model | `API_SECRET` in `.env` | Yes |
+| `--num-choices` | Number of responses to generate for each question | `5` | No. Default to 5. |
+| `--question-count` | Number of questions to run | None | No. Default to None, which runs all questions. |
+
+### Judge Script Params
+
+This applies to both `bin/api/run_docker_eval.sh judge` and `bin/api/run_openai_judge.sh`.
 
 | Argument | Description | Required |
 | --- | --- | --- |
 | `--model-name` | Model name | Yes |
 | `--openai-api-key` | OpenAI API key | Yes |
 | `--parallel` | Number of parallel API calls | No. Default to 5. |
-
-The results are output to `llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_<model-name>.jsonl`.
 
 </details>
 
