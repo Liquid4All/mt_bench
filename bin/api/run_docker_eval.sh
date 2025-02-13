@@ -157,3 +157,5 @@ elif [[ "$MODE" == "judge" ]]; then
         --parallel "$PARALLEL" \
         --ci "$CI"
 fi
+
+sudo chown $(id -u):$(id -g) -R ./llm_judge || true
