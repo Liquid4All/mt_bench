@@ -148,7 +148,8 @@ elif [[ "$MODE" == "judge" ]]; then
     fi
 
     # Run judge mode
-    docker run \
+    docker run -it \
+        --network="host" \
         -e MODEL_NAME="$MODEL_NAME" \
         -e OPENAI_API_KEY="$OPENAI_API_KEY" \
         -v "$(pwd)/llm_judge:/app/llm_judge" \
