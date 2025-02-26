@@ -93,7 +93,8 @@ if [[ "$MODE" == "generate" ]]; then
     fi
 
     # Run generate mode
-    docker run \
+    docker run --rm -it \
+        --network="host" \
         -e MODEL_NAME="$MODEL_NAME" \
         -e MODEL_API_KEY="$MODEL_API_KEY" \
         -e MODEL_URL="$MODEL_URL" \
