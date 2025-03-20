@@ -21,17 +21,19 @@ bin/api/run_docker_eval.sh generate \
 
 Results will be output in `llm_judge/data/japanese_mt_bench/model_answer/<model-name>.jsonl`
 
-2. Run OpenAI judge:
+2. Run judge:
 
 ```bash
 bin/api/run_docker_eval.sh judge \
   --model-name <model-name> \
-  --openai-api-key <openai-api-key>
+  --judge-model-name <judge-model-name> \
+  --judge-model-url <judge-model-url> \
+  --judge-model-api-key <judge-model-api-key>
 ```
 
-GPT judge results will be output to `llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_<model-name>.jsonl`.
+Judge results will be output to `llm_judge/data/japanese_mt_bench/model_judgment/<judge-model-name>_<model-name>.jsonl`.
 
-The final scores will be output in `llm_judge/data/japanese_mt_bench/gpt4-score-<model-name>.json`.
+The final scores will be output in `llm_judge/data/japanese_mt_bench/<judge-model-name>-score-<model-name>.json`.
 
 ### Examples
 
@@ -45,7 +47,9 @@ bin/api/run_docker_eval.sh generate \
 
 bin/api/run_docker_eval.sh judge \
   --model-name lfm-3b-jp \
-  --openai-api-key <OPENAI-API-KEY>
+  --judge-model-name gpt-4o \
+  --judge-model-url https://api.openai.com/v1 \
+  --judge-model-api-key <OPENAI-API-KEY>
 ```
 
 Run eval for `lfm-3b-ichikara` on-prem:
@@ -71,7 +75,9 @@ bin/api/run_docker_eval.sh generate \
 
 bin/api/run_docker_eval.sh judge \
   --model-name lfm-3b-jp \
-  --openai-api-key <OPENAI-API-KEY>
+  --judge-model-name gpt-4o \
+  --judge-model-url https://api.openai.com/v1 \
+  --judge-model-api-key <OPENAI-API-KEY>
 ```
 
 ## Run Evaluation without Docker
@@ -111,16 +117,16 @@ Results will be output in `llm_judge/data/japanese_mt_bench/model_answer/<model-
 2. Run the following scripts to generate GPT-4 judgement scores for the model answers.
 
 ```bash
-bin/api/run_openai_judge.sh --model-name <model-name> --openai-api-key <OPENAI-API-KEY>
+bin/api/run_openai_judge.sh --model-name <model-name> --judge-model-name <judge-model-name> --judge-model-url <judge-model-url> --judge-model-api-key <judge-model-api-key>
 
 # examples:
-bin/api/run_openai_judge.sh --model-name lfm-3b-jp --openai-api-key <OPENAI-API-KEY>
-bin/api/run_openai_judge.sh --model-name lfm-3b-ichikara --openai-api-key <OPENAI-API-KEY>
+bin/api/run_openai_judge.sh --model-name lfm-3b-jp --judge-model-name gpt-4o --judge-model-url https://api.openai.com/v1 --judge-model-api-key <OPENAI-API-KEY>
+bin/api/run_openai_judge.sh --model-name lfm-3b-ichikara --judge-model-name gpt-4o --judge-model-url https://api.openai.com/v1 --judge-model-api-key <OPENAI-API-KEY>
 ```
 
-GPT judge results will be output to `llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_<model-name>.jsonl`.
+Judge results will be output to `llm_judge/data/japanese_mt_bench/model_judgment/<judge-model-name>_<model-name>.jsonl`.
 
-The final scores will be output in `llm_judge/data/japanese_mt_bench/gpt4-score-<model-name>.json`.
+The final scores will be output in `llm_judge/data/japanese_mt_bench/<judge-model-name>-score-<model-name>.json`.
 
 </details>
 
@@ -148,8 +154,10 @@ This applies to both `bin/api/run_docker_eval.sh judge` and `bin/api/run_openai_
 
 | Argument | Description | Required |
 | --- | --- | --- |
-| `--model-name` | Model name | Yes |
-| `--openai-api-key` | OpenAI API key | Yes |
+| `--model-name` | Model name to be evaluated | Yes |
+| `--judge-model-name` | Name of the judge model (default: gpt-4) | No |
+| `--judge-model-url` | Base URL for the judge model API | Yes |
+| `--judge-model-api-key` | API key for the judge model | Yes |
 | `--parallel` | Number of parallel API calls | No. Default to 5. |
 
 </details>
