@@ -184,7 +184,9 @@ if __name__ == "__main__":
         default="llm_judge/data/judge_prompts.jsonl",
         help="The file of judge prompts.",
     )
-    parser.add_argument("--judge-model", type=str, default="gpt-4")
+    parser.add_argument("--judge-model", type=str, default="gpt-4", help="The model used for judging")
+    parser.add_argument("--judge-model-url", type=str, default="", help="Base URL for the judge model API")
+    parser.add_argument("--judge-model-api-key", type=str, default="", help="API key for the judge model")
     parser.add_argument("--baseline-model", type=str, default="gpt-3.5-turbo")
     parser.add_argument(
         "--mode",
@@ -320,14 +322,22 @@ if __name__ == "__main__":
     print(json.dumps(match_stat, indent=4, ensure_ascii=False))
     # input("Press Enter to confirm...")
 
+    # Prepare API dict if judge model URL and API key are provided
+    api_dict = None
+    if args.judge_model_url and args.judge_model_api_key:
+        api_dict = {
+            "api_base": args.judge_model_url,
+            "api_key": args.judge_model_api_key
+        }
+
     # Play matches
     if args.parallel == 1:
         for match in tqdm(matches):
-            play_a_match_func(match, output_file=output_file, azure=args.azure)
+            play_a_match_func(match, output_file=output_file, api_dict=api_dict)
     else:
 
         def play_a_match_wrapper(match):
-            play_a_match_func(match, output_file=output_file, azure=args.azure)
+            play_a_match_func(match, output_file=output_file, api_dict=api_dict)
 
         np.random.seed(0)
         np.random.shuffle(matches)

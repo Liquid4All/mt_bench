@@ -157,7 +157,7 @@ def load_judge_prompts(prompt_file: str):
     return prompts
 
 
-def run_judge_single(question, answer, judge, ref_answer, multi_turn=False, azure=True):
+def run_judge_single(question, answer, judge, ref_answer, multi_turn=False, api_dict=None):
     kwargs = {}
     model = judge.model_name
     if ref_answer is not None:
@@ -193,12 +193,9 @@ def run_judge_single(question, answer, judge, ref_answer, multi_turn=False, azur
         conv.append_message(conv.roles[1], None)
 
         if model in OPENAI_MODEL_LIST:
-            if azure:
-                judgment = chat_completion_openai_azure(
-                    model, conv, temperature=0, max_tokens=2048
-                )
-            else:
-                judgment = chat_completion_openai(model, conv, temperature=0, max_tokens=2048)
+            judgment = chat_completion_openai(
+                model, conv, temperature=0, max_tokens=2048, api_dict=api_dict
+            )
         elif model in ANTHROPIC_MODEL_LIST:
             judgment = chat_completion_anthropic(
                 model, conv, temperature=0, max_tokens=1024
@@ -226,7 +223,7 @@ def run_judge_single(question, answer, judge, ref_answer, multi_turn=False, azur
     return rating_list, user_prompt_list, judgment_list
 
 
-def play_a_match_single(match: MatchPair, output_file: str, azure=True):
+def play_a_match_single(match: MatchSingle, output_file: str, api_dict=None):
     question, model, answer, judge, ref_answer, multi_turn = (
         match.question,
         match.model,
@@ -238,7 +235,7 @@ def play_a_match_single(match: MatchPair, output_file: str, azure=True):
 
     if judge.prompt_template["type"] == "single":
         score_list, user_prompt_list, judgment_list = run_judge_single(
-            question, answer, judge, ref_answer, multi_turn=multi_turn, azure=azure
+            question, answer, judge, ref_answer, multi_turn=multi_turn, api_dict=api_dict
         )
 
         question_id = question["question_id"]
@@ -259,7 +256,7 @@ def play_a_match_single(match: MatchPair, output_file: str, azure=True):
             f"judge: {(judge.model_name, judge.prompt_template['name'])}"
         )
     else:
-        raise ValueError(f"invalid judge type: {judge['type']}")
+        raise ValueError(f"invalid judge type: {judge.prompt_template['type']}")
 
     if output_file:
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -269,7 +266,7 @@ def play_a_match_single(match: MatchPair, output_file: str, azure=True):
     return result
 
 
-def run_judge_pair(question, answer_a, answer_b, judge, ref_answer, multi_turn=False, azure=True):
+def run_judge_pair(question, answer_a, answer_b, judge, ref_answer, multi_turn=False, api_dict=None):
     kwargs = {}
     model = judge.model_name
     if ref_answer is not None:
@@ -305,12 +302,9 @@ def run_judge_pair(question, answer_a, answer_b, judge, ref_answer, multi_turn=F
 
     if model in OPENAI_MODEL_LIST:
         conv.set_system_message(system_prompt)
-        if azure:
-            judgment = chat_completion_openai_azure(
-                model, conv, temperature=0, max_tokens=2048
-            )
-        else:
-            judgment = chat_completion_openai(model, conv, temperature=0, max_tokens=2048)
+        judgment = chat_completion_openai(
+            model, conv, temperature=0, max_tokens=2048, api_dict=api_dict
+        )
     elif model in ANTHROPIC_MODEL_LIST:
         if system_prompt != "You are a helpful assistant.":
             user_prompt = "[Instruction]\n" + system_prompt + "\n\n" + user_prompt
@@ -352,7 +346,7 @@ def run_judge_pair(question, answer_a, answer_b, judge, ref_answer, multi_turn=F
     return winner, user_prompt, judgment
 
 
-def play_a_match_pair(match: MatchPair, output_file: str):
+def play_a_match_pair(match: MatchPair, output_file: str, api_dict=None):
     question, model_1, model_2, answer_1, answer_2, judge, ref_answer, multi_turn = (
         match.question,
         match.model_1,
@@ -366,10 +360,10 @@ def play_a_match_pair(match: MatchPair, output_file: str):
 
     if judge.prompt_template["type"] == "pairwise":
         g1_winner, g1_user_prompt, g1_judgment = run_judge_pair(
-            question, answer_1, answer_2, judge, ref_answer, multi_turn=multi_turn, azure=True
+            question, answer_1, answer_2, judge, ref_answer, multi_turn=multi_turn, api_dict=api_dict
         )
         g2_winner, g2_user_prompt, g2_judgment = run_judge_pair(
-            question, answer_2, answer_1, judge, ref_answer, multi_turn=multi_turn, azure=True
+            question, answer_2, answer_1, judge, ref_answer, multi_turn=multi_turn, api_dict=api_dict
         )
 
         g1_map = {"A": "model_1", "B": "model_2"}
@@ -401,15 +395,19 @@ def play_a_match_pair(match: MatchPair, output_file: str):
         )
     elif judge.prompt_template["type"] == "single":
         m1_score, m1_user_prompt, m1_judgment = run_judge_single(
-            question, answer_1, judge, azure=True
+            question, answer_1, judge, ref_answer, api_dict=api_dict
         )
         m2_score, m2_user_prompt, m2_judgment = run_judge_single(
-            question, answer_2, judge, azure=True
+            question, answer_2, judge, ref_answer, api_dict=api_dict
         )
 
-        if abs(m1_score - m2_score) <= TIE_DELTA:
+        # Extract first score from lists
+        m1_first_score = m1_score[0] if isinstance(m1_score, list) else m1_score
+        m2_first_score = m2_score[0] if isinstance(m2_score, list) else m2_score
+        
+        if abs(m1_first_score - m2_first_score) <= TIE_DELTA:
             winner = "tie"
-        elif m1_score > m2_score:
+        elif m1_first_score > m2_first_score:
             winner = "model_1"
         else:
             winner = "model_2"
@@ -436,7 +434,7 @@ def play_a_match_pair(match: MatchPair, output_file: str):
             f"judge: {(judge.model_name, judge.prompt_template['name'])}"
         )
     else:
-        raise ValueError(f"invalid judge type: {judge['type']}")
+        raise ValueError(f"invalid judge type: {judge.prompt_template['type']}")
 
     if output_file:
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -520,8 +518,8 @@ def chat_completion_openai_azure(model, conv, temperature, max_tokens, api_dict=
         except openai.error.InvalidRequestError as e:
             print(type(e), e)
             break
-        except KeyError:
-            print(response)
+        except KeyError as e:
+            print(f"KeyError: {e}")
             break
 
     return output

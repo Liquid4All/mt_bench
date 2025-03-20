@@ -47,6 +47,18 @@ elif [[ "$MODE" == "judge" ]]; then
     # Extract arguments for judge mode
     PARALLEL="5"
     CI="false"
+    JUDGE_MODEL_NAME=${JUDGE_MODEL_NAME:-"gpt-4"}
+    JUDGE_MODEL_URL=${JUDGE_MODEL_URL:-""}
+    JUDGE_MODEL_API_KEY=${JUDGE_MODEL_API_KEY:-""}
+    
+    # If no judge model API key is provided, use OpenAI API key
+    if [[ -z "$JUDGE_MODEL_API_KEY" && -n "$OPENAI_API_KEY" ]]; then
+        JUDGE_MODEL_API_KEY="$OPENAI_API_KEY"
+        # Set default OpenAI URL if none provided
+        if [[ -z "$JUDGE_MODEL_URL" ]]; then
+            JUDGE_MODEL_URL="https://api.openai.com/v1"
+        fi
+    fi
 
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -67,14 +79,18 @@ elif [[ "$MODE" == "judge" ]]; then
     # Generate judgments
     python llm_judge/gen_judgment.py \
         --model-list "$MODEL_NAME" \
+        --judge-model "$JUDGE_MODEL_NAME" \
+        --judge-model-url "$JUDGE_MODEL_URL" \
+        --judge-model-api-key "$JUDGE_MODEL_API_KEY" \
         --parallel "$PARALLEL" \
         --bench-name japanese_mt_bench
 
     # Show results
     python llm_judge/show_result.py \
         --model-list "$MODEL_NAME" \
+        --judge-model "$JUDGE_MODEL_NAME" \
         --ci "$CI" \
         --bench-name japanese_mt_bench \
-        --input-file llm_judge/data/japanese_mt_bench/model_judgment/gpt-4_$MODEL_NAME.jsonl \
-        --output llm_judge/data/japanese_mt_bench/gpt4-score-$MODEL_NAME.json
+        --input-file "llm_judge/data/japanese_mt_bench/model_judgment/${JUDGE_MODEL_NAME}_$MODEL_NAME.jsonl" \
+        --output "llm_judge/data/japanese_mt_bench/${JUDGE_MODEL_NAME}-score-$MODEL_NAME.json"
 fi
