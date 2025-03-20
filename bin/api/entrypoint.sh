@@ -51,13 +51,15 @@ elif [[ "$MODE" == "judge" ]]; then
     JUDGE_MODEL_URL=${JUDGE_MODEL_URL:-""}
     JUDGE_MODEL_API_KEY=${JUDGE_MODEL_API_KEY:-""}
     
-    # If no judge model API key is provided, use OpenAI API key
-    if [[ -z "$JUDGE_MODEL_API_KEY" && -n "$OPENAI_API_KEY" ]]; then
-        JUDGE_MODEL_API_KEY="$OPENAI_API_KEY"
-        # Set default OpenAI URL if none provided
-        if [[ -z "$JUDGE_MODEL_URL" ]]; then
-            JUDGE_MODEL_URL="https://api.openai.com/v1"
-        fi
+    # Ensure required parameters are set
+    if [[ -z "$JUDGE_MODEL_API_KEY" ]]; then
+        echo "Error: JUDGE_MODEL_API_KEY environment variable is required"
+        exit 1
+    fi
+    
+    if [[ -z "$JUDGE_MODEL_URL" ]]; then
+        echo "Error: JUDGE_MODEL_URL environment variable is required"
+        exit 1
     fi
 
     while [[ $# -gt 0 ]]; do

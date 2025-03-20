@@ -23,7 +23,6 @@ print_usage() {
     echo
     echo "Judge mode options:"
     echo "  --model-name          Name of the model to evaluate"
-    echo "  --openai-api-key      OpenAI API key for backward compatibility"
     echo "  --judge-model-name    Name of the judge model (default: gpt-4)"
     echo "  --judge-model-url     Base URL for the judge model API"
     echo "  --judge-model-api-key API key for the judge model"
@@ -109,7 +108,6 @@ if [[ "$MODE" == "generate" ]]; then
 elif [[ "$MODE" == "judge" ]]; then
     # Process judge mode arguments
     MODEL_NAME=""
-    OPENAI_API_KEY=""
     JUDGE_MODEL_NAME="gpt-4"
     JUDGE_MODEL_URL=""
     JUDGE_MODEL_API_KEY=""
@@ -122,10 +120,7 @@ elif [[ "$MODE" == "judge" ]]; then
                 MODEL_NAME="$2"
                 shift 2
                 ;;
-            --openai-api-key)
-                OPENAI_API_KEY="$2"
-                shift 2
-                ;;
+
             --judge-model-name)
                 JUDGE_MODEL_NAME="$2"
                 shift 2
@@ -160,26 +155,17 @@ elif [[ "$MODE" == "judge" ]]; then
         exit 1
     fi
 
-    # If --judge-model-api-key is provided, use it
-    if [[ -n "$JUDGE_MODEL_API_KEY" ]]; then
-        # Use the new judge model parameters
-        if [[ -z "$JUDGE_MODEL_URL" ]]; then
-            echo "Error: --judge-model-url is required when using --judge-model-api-key"
-            print_usage
-            exit 1
-        fi
-    elif [[ -z "$OPENAI_API_KEY" ]]; then
-        # Fall back to requiring OpenAI API key
-        echo "Error: Either --judge-model-api-key or --openai-api-key is required"
+    # Validate required parameters
+    if [[ -z "$JUDGE_MODEL_API_KEY" ]]; then
+        echo "Error: --judge-model-api-key is required"
         print_usage
         exit 1
-    else
-        # If only OpenAI API key is provided, use it as the judge model API key
-        JUDGE_MODEL_API_KEY="$OPENAI_API_KEY"
-        # Default to OpenAI API URL if using OpenAI API key
-        if [[ -z "$JUDGE_MODEL_URL" ]]; then
-            JUDGE_MODEL_URL="https://api.openai.com/v1"
-        fi
+    fi
+    
+    if [[ -z "$JUDGE_MODEL_URL" ]]; then
+        echo "Error: --judge-model-url is required"
+        print_usage
+        exit 1
     fi
 
     # Run judge mode
@@ -189,7 +175,6 @@ elif [[ "$MODE" == "judge" ]]; then
         -e JUDGE_MODEL_NAME="$JUDGE_MODEL_NAME" \
         -e JUDGE_MODEL_URL="$JUDGE_MODEL_URL" \
         -e JUDGE_MODEL_API_KEY="$JUDGE_MODEL_API_KEY" \
-        -e OPENAI_API_KEY="$OPENAI_API_KEY" \
         -v "$(pwd)/llm_judge:/app/llm_judge" \
         liquidai/mt-bench:latest judge \
         --parallel "$PARALLEL" \

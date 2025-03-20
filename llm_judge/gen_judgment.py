@@ -213,9 +213,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--first-n", type=int, help="A debug option. Only run the first `n` judgments."
     )
-    parser.add_argument(
-        "--azure", action="store_true", help="Use Azure API instead of openai.", default=False
-    )
+    # Remove Azure parameter as we now use custom judge model parameters
     args = parser.parse_args()
 
     args.model_list = [model_path.replace("/", "_") for model_path in args.model_list]
@@ -250,20 +248,14 @@ if __name__ == "__main__":
     if args.mode == "single":
         judges = make_judge_single(args.judge_model, judge_prompts)
         play_a_match_func = play_a_match_single
-        if args.azure:
-            output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_single_azure.jsonl")
-        else:
-            model_suffix = "_".join(args.model_list)
-            output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_{model_suffix}.jsonl")
+        model_suffix = "_".join(args.model_list)
+        output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_{model_suffix}.jsonl")
         make_match_func = make_match_single
         baseline_model = None
     else:
         judges = make_judge_pairwise(args.judge_model, judge_prompts)
         play_a_match_func = play_a_match_pair
-        if args.azure:
-            output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_pair_azure.jsonl")
-        else:
-            output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_pair.jsonl")
+        output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_pair.jsonl")
         if args.mode == "pairwise-all":
             make_match_func = make_match_all_pairs
             baseline_model = None

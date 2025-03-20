@@ -1,11 +1,10 @@
 #!/bin/bash
 
 print_usage() {
-    echo "Usage: $0 --model-name <model_name> [--openai-api-key <api_key> | (--judge-model-name <judge_model_name> --judge-model-url <url> --judge-model-api-key <api_key>)] --parallel <parallel>"
+    echo "Usage: $0 --model-name <model_name> --judge-model-name <judge_model_name> --judge-model-url <url> --judge-model-api-key <api_key> --parallel <parallel>"
     echo
     echo "Arguments:"
     echo "  --model-name          Model name to be evaluated"
-    echo "  --openai-api-key      OpenAI API key (backward compatibility)"
     echo "  --judge-model-name    Name of the judge model (default: gpt-4)"
     echo "  --judge-model-url     Base URL for the judge model API"
     echo "  --judge-model-api-key API key for the judge model"
@@ -13,7 +12,6 @@ print_usage() {
     echo "  --ci                  CI mode"
 }
 
-OPENAI_API_KEY=""
 MODEL_NAME=""
 JUDGE_MODEL_NAME="gpt-4"
 JUDGE_MODEL_URL=""
@@ -23,10 +21,7 @@ CI="false"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --openai-api-key)
-            OPENAI_API_KEY="$2"
-            shift 2
-            ;;
+
         --model-name)
             MODEL_NAME="$2"
             shift 2
@@ -59,26 +54,17 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# If judge model API key is provided, use it
-if [[ -n "$JUDGE_MODEL_API_KEY" ]]; then
-    # Use the new judge model parameters
-    if [[ -z "$JUDGE_MODEL_URL" ]]; then
-        echo "Error: --judge-model-url is required when using --judge-model-api-key"
-        print_usage
-        exit 1
-    fi
-elif [[ -z "$OPENAI_API_KEY" ]]; then
-    # Fall back to requiring OpenAI API key
-    echo "Error: Either --judge-model-api-key or --openai-api-key is required"
+# Validate required parameters
+if [[ -z "$JUDGE_MODEL_API_KEY" ]]; then
+    echo "Error: --judge-model-api-key is required"
     print_usage
     exit 1
-else
-    # If only OpenAI API key is provided, use it as the judge model API key
-    JUDGE_MODEL_API_KEY="$OPENAI_API_KEY"
-    # Default to OpenAI API URL if using OpenAI API key
-    if [[ -z "$JUDGE_MODEL_URL" ]]; then
-        JUDGE_MODEL_URL="https://api.openai.com/v1"
-    fi
+fi
+
+if [[ -z "$JUDGE_MODEL_URL" ]]; then
+    echo "Error: --judge-model-url is required"
+    print_usage
+    exit 1
 fi
 
 if [[ -z "$MODEL_NAME" ]]; then
@@ -87,7 +73,6 @@ if [[ -z "$MODEL_NAME" ]]; then
     exit 1
 fi
 
-export OPENAI_API_KEY="$OPENAI_API_KEY"
 export JUDGE_MODEL_NAME="$JUDGE_MODEL_NAME"
 export JUDGE_MODEL_URL="$JUDGE_MODEL_URL"
 export JUDGE_MODEL_API_KEY="$JUDGE_MODEL_API_KEY"

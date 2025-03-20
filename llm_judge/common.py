@@ -477,52 +477,13 @@ def chat_completion_openai(model, conv, temperature, max_tokens, api_dict=None):
     return output
 
 
-def chat_completion_openai_azure(model, conv, temperature, max_tokens, api_dict=None):
-    openai.api_type = "azure"
-    openai.api_version = "2023-07-01-preview"
-    if api_dict is not None:
-        openai.api_base = api_dict["api_base"]
-        openai.api_key = api_dict["api_key"]
-    else:
-        openai.api_base = os.environ["AZURE_OPENAI_ENDPOINT"]
-        openai.api_key = os.environ["AZURE_OPENAI_KEY"]
+# Remove Azure-specific function as we now use custom judge model parameters
+# This function is no longer needed
 
     if "azure-" in model:
         model = model[6:]
 
-    output = API_ERROR_OUTPUT
-    min_sleep_time = 1
-    max_sleep_time = API_RETRY_SLEEP
-    for _ in range(API_MAX_RETRY):
-        try:
-            messages = conv.to_openai_api_messages()
-            response = openai.ChatCompletion.create(
-                engine=model,
-                messages=messages,
-                n=1,
-                temperature=temperature,
-                max_tokens=max_tokens,
-            )
-            output = response["choices"][0]["message"]["content"]
-            break
-        except openai.error.RateLimitError as e:
-            print(type(e), e)
-            sleep_time = random.randint(min_sleep_time, max_sleep_time)
-            print(f"Sleeping for {sleep_time} seconds")
-            time.sleep(sleep_time)
-            max_sleep_time = min(MAX_API_RETRY_SLEEP, max_sleep_time * 2)
-            min_sleep_time = max_sleep_time // 2
-        except openai.error.OpenAIError as e:
-            print(type(e), e)
-            time.sleep(API_RETRY_SLEEP)
-        except openai.error.InvalidRequestError as e:
-            print(type(e), e)
-            break
-        except KeyError as e:
-            print(f"KeyError: {e}")
-            break
-
-    return output
+# Function body removed as we now use custom judge model parameters
 
 
 def chat_completion_anthropic(model, conv, temperature, max_tokens, api_dict=None):
