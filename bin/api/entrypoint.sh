@@ -81,7 +81,7 @@ elif [[ "$MODE" == "judge" ]]; then
     # Generate judgments
     python llm_judge/gen_judgment.py \
         --model-list "$MODEL_NAME" \
-        --judge-model "$JUDGE_MODEL_NAME" \
+        --judge-model-name "$JUDGE_MODEL_NAME" \
         --judge-model-url "$JUDGE_MODEL_URL" \
         --judge-model-api-key "$JUDGE_MODEL_API_KEY" \
         --parallel "$PARALLEL" \
@@ -90,7 +90,7 @@ elif [[ "$MODE" == "judge" ]]; then
     # Show results
     python llm_judge/show_result.py \
         --model-list "$MODEL_NAME" \
-        --judge-model "$JUDGE_MODEL_NAME" \
+        --judge-model-name "$JUDGE_MODEL_NAME" \
         --ci "$CI" \
         --bench-name japanese_mt_bench \
         --input-file "llm_judge/data/japanese_mt_bench/model_judgment/${JUDGE_MODEL_NAME}_$MODEL_NAME.jsonl" \

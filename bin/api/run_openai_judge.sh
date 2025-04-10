@@ -1,15 +1,15 @@
 #!/bin/bash
 
 print_usage() {
-    echo "Usage: $0 --model-name <model_name> --judge-model-name <judge_model_name> --judge-model-url <url> --judge-model-api-key <api_key> --parallel <parallel>"
+    echo "Usage: $0 --model-name <model_name> [--judge-model-name <judge_model_name>] [--judge-model-url <url>] --judge-model-api-key <api_key> [--parallel <parallel>]"
     echo
     echo "Arguments:"
-    echo "  --model-name          Model name to be evaluated"
+    echo "  --model-name          Model name to be evaluated (required)"
     echo "  --judge-model-name    Name of the judge model (default: gpt-4)"
-    echo "  --judge-model-url     Base URL for the judge model API"
-    echo "  --judge-model-api-key API key for the judge model"
-    echo "  --parallel            Number of parallel processes"
-    echo "  --ci                  CI mode"
+    echo "  --judge-model-url     Base URL for the judge model API (default: https://api.openai.com/v1)"
+    echo "  --judge-model-api-key API key for the judge model (required)"
+    echo "  --parallel            Number of parallel processes (default: 5)"
+    echo "  --ci                  CI mode (default: false)"
 }
 
 MODEL_NAME=""
@@ -55,20 +55,14 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validate required parameters
-if [[ -z "$JUDGE_MODEL_API_KEY" ]]; then
-    echo "Error: --judge-model-api-key is required"
-    print_usage
-    exit 1
-fi
-
-if [[ -z "$JUDGE_MODEL_URL" ]]; then
-    echo "Error: --judge-model-url is required"
-    print_usage
-    exit 1
-fi
-
 if [[ -z "$MODEL_NAME" ]]; then
     echo "Error: --model-name is required"
+    print_usage
+    exit 1
+fi
+
+if [[ -z "$JUDGE_MODEL_API_KEY" ]]; then
+    echo "Error: --judge-model-api-key is required"
     print_usage
     exit 1
 fi
@@ -80,12 +74,14 @@ export PYTHONPATH=.
 
 python llm_judge/gen_judgment.py \
   --model-list "$MODEL_NAME" \
-  --judge-model "$JUDGE_MODEL_NAME" \
+  --judge-model-name "$JUDGE_MODEL_NAME" \
+  --judge-model-url "$JUDGE_MODEL_URL" \
+  --judge-model-api-key "$JUDGE_MODEL_API_KEY" \
   --parallel "$PARALLEL" \
   --bench-name japanese_mt_bench
 
 python llm_judge/show_result.py --model-list "$MODEL_NAME" \
-  --judge-model "$JUDGE_MODEL_NAME" \
+  --judge-model-name "$JUDGE_MODEL_NAME" \
   --ci "$CI" \
   --bench-name japanese_mt_bench \
   --input-file "llm_judge/data/japanese_mt_bench/model_judgment/${JUDGE_MODEL_NAME}_$MODEL_NAME.jsonl" \

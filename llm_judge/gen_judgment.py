@@ -185,7 +185,7 @@ if __name__ == "__main__":
         default="llm_judge/data/judge_prompts.jsonl",
         help="The file of judge prompts.",
     )
-    parser.add_argument("--judge-model", type=str, default="gpt-4", help="The model used for judging")
+    parser.add_argument("--judge-model-name", type=str, default="gpt-4", help="The model used for judging")
     parser.add_argument("--judge-model-url", type=str, default="", help="Base URL for the judge model API")
     parser.add_argument("--judge-model-api-key", type=str, default="", help="API key for the judge model")
     parser.add_argument("--baseline-model", type=str, default="gpt-3.5-turbo")
@@ -216,6 +216,12 @@ if __name__ == "__main__":
     )
     # Remove Azure parameter as we now use custom judge model parameters
     args = parser.parse_args()
+    print(f"Model name: {args.model_list}")
+    print(f"Judge model name: {args.judge_model_name}")
+    if args.judge_model_url:
+        print(f"Judge model URL: {args.judge_model_url}")
+    if args.judge_model_api_key:
+        print(f"Judge model API key: {args.judge_model_api_key[0:4]}***")
 
     args.model_list = [model_path.replace("/", "_") for model_path in args.model_list]
 
@@ -247,16 +253,16 @@ if __name__ == "__main__":
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if args.mode == "single":
-        judges = make_judge_single(args.judge_model, judge_prompts)
+        judges = make_judge_single(args.judge_model_name, judge_prompts)
         play_a_match_func: Callable[[MatchSingle | MatchPair, str, dict[str, Any] | None], dict[str, Any]] = play_a_match_single
         model_suffix = "_".join(args.model_list)
-        output_file = str(os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_{model_suffix}.jsonl"))
+        output_file = str(os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model_name}_{model_suffix}.jsonl"))
         make_match_func = make_match_single
         baseline_model = None
     else:
-        judges = make_judge_pairwise(args.judge_model, judge_prompts)
+        judges = make_judge_pairwise(args.judge_model_name, judge_prompts)
         play_a_match_func: Callable[[MatchSingle | MatchPair, str, dict[str, Any] | None], dict[str, Any]] = play_a_match_pair
-        output_file = str(os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_pair.jsonl"))
+        output_file = str(os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model_name}_pair.jsonl"))
         if args.mode == "pairwise-all":
             make_match_func = make_match_all_pairs
             baseline_model = None
@@ -303,7 +309,7 @@ if __name__ == "__main__":
     match_stat = {}
     match_stat["bench_name"] = args.bench_name
     match_stat["mode"] = args.mode
-    match_stat["judge"] = args.judge_model
+    match_stat["judge"] = args.judge_model_name
     match_stat["baseline"] = baseline_model
     match_stat["model_list"] = models
     match_stat["total_num_questions"] = len(questions)

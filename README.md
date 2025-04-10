@@ -119,11 +119,24 @@ Results will be output in `llm_judge/data/japanese_mt_bench/model_answer/<model-
 2. Run the following scripts to generate GPT-4 judgement scores for the model answers.
 
 ```bash
-bin/api/run_openai_judge.sh --model-name <model-name> --judge-model-name <judge-model-name> --judge-model-url <judge-model-url> --judge-model-api-key <judge-model-api-key>
+bin/api/run_openai_judge.sh \
+  --model-name <model-name> \
+  --judge-model-name <judge-model-name> \
+  --judge-model-url <judge-model-url> \
+  --judge-model-api-key <judge-model-api-key>
 
 # examples:
-bin/api/run_openai_judge.sh --model-name lfm-3b-jp --judge-model-name gpt-4o --judge-model-url https://api.openai.com/v1 --judge-model-api-key <OPENAI-API-KEY>
-bin/api/run_openai_judge.sh --model-name lfm-3b-ichikara --judge-model-name gpt-4o --judge-model-url https://api.openai.com/v1 --judge-model-api-key <OPENAI-API-KEY>
+bin/api/run_openai_judge.sh \
+  --model-name lfm-3b-jp \
+  --judge-model-name gpt-4o \
+  --judge-model-url https://api.openai.com/v1 \
+  --judge-model-api-key <OPENAI-API-KEY>
+
+bin/api/run_openai_judge.sh \
+  --model-name lfm-3b-ichikara \
+  --judge-model-name gpt-4o \
+  --judge-model-url https://api.openai.com/v1 \
+  --judge-model-api-key <OPENAI-API-KEY>
 ```
 
 Judge results will be output to `llm_judge/data/japanese_mt_bench/model_judgment/<judge-model-name>_<model-name>.jsonl`.
