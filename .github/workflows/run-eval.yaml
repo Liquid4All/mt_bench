@@ -75,7 +75,7 @@ jobs:
         run: |
           bin/api/run_openai_judge.sh \
             --model-name "$MODEL_NAME" \
-            --judge-model-name "gpt-4" \
+            --judge-model-name "gpt-4o-mini" \
             --judge-model-url "https://api.openai.com/v1" \
             --judge-model-api-key "$OPENAI_API_KEY" \
             --parallel 3
