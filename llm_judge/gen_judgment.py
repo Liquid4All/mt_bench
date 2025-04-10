@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 from concurrent.futures import ThreadPoolExecutor
+from typing import Any, Callable
 
 import numpy as np
 from tqdm import tqdm
@@ -247,15 +248,15 @@ if __name__ == "__main__":
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if args.mode == "single":
         judges = make_judge_single(args.judge_model, judge_prompts)
-        play_a_match_func = play_a_match_single
+        play_a_match_func: Callable[[MatchSingle | MatchPair, str, dict[str, Any] | None], dict[str, Any]] = play_a_match_single
         model_suffix = "_".join(args.model_list)
-        output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_{model_suffix}.jsonl")
+        output_file = str(os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_{model_suffix}.jsonl"))
         make_match_func = make_match_single
         baseline_model = None
     else:
         judges = make_judge_pairwise(args.judge_model, judge_prompts)
-        play_a_match_func = play_a_match_pair
-        output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_pair.jsonl")
+        play_a_match_func: Callable[[MatchSingle | MatchPair, str, dict[str, Any] | None], dict[str, Any]] = play_a_match_pair
+        output_file = str(os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_pair.jsonl"))
         if args.mode == "pairwise-all":
             make_match_func = make_match_all_pairs
             baseline_model = None
@@ -331,9 +332,8 @@ if __name__ == "__main__":
         for match in tqdm(matches):
             play_a_match_func(match, output_file=output_file, api_dict=api_dict)
     else:
-
-        def play_a_match_wrapper(match):
-            play_a_match_func(match, output_file=output_file, api_dict=api_dict)
+        def play_a_match_wrapper(input_match):
+            play_a_match_func(input_match, output_file=output_file, api_dict=api_dict)
 
         np.random.seed(0)
         np.random.shuffle(matches)

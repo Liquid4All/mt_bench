@@ -9,7 +9,7 @@ import json
 import os
 import re
 import time
-from typing import Optional
+from typing import Any, Optional
 import random
 
 import openai
@@ -211,7 +211,9 @@ def run_judge_single(question, answer, judge, ref_answer, multi_turn=False, api_
     return rating_list, user_prompt_list, judgment_list
 
 
-def play_a_match_single(match: MatchSingle, output_file: str, api_dict=None):
+def play_a_match_single(
+    match: MatchSingle, output_file: str, api_dict: dict[str, Any] | None = None
+) -> dict[str, Any]:
     question, model, answer, judge, ref_answer, multi_turn = (
         match.question,
         match.model,
@@ -324,7 +326,9 @@ def run_judge_pair(question, answer_a, answer_b, judge, ref_answer, multi_turn=F
     return winner, user_prompt, judgment
 
 
-def play_a_match_pair(match: MatchPair, output_file: str, api_dict=None):
+def play_a_match_pair(
+    match: MatchPair, output_file: str, api_dict: dict[str, Any] | None = None
+) -> dict[str, Any]:
     question, model_1, model_2, answer_1, answer_2, judge, ref_answer, multi_turn = (
         match.question,
         match.model_1,
