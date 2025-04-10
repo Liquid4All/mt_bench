@@ -23,6 +23,8 @@ Results will be output in `llm_judge/data/japanese_mt_bench/model_answer/<model-
 
 2. Run judge:
 
+The judge script will use the judge model to compare [GPT-4 results](llm_judge/data/mt_bench/reference_answer/gpt-4.jsonl) with the model results. The judge model defaults to GPT-4.
+
 ```bash
 bin/api/run_docker_eval.sh judge \
   --model-name <model-name> \
