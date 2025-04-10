@@ -76,7 +76,7 @@ jobs:
           # let the model judge itself against the GPT-4 answers
           bin/api/run_openai_judge.sh \
             --model-name "$MODEL_NAME" \
-            --judge-model-name "$MODEL_NAME" \
+            --judge-model-name "lfm-7b" \
             --judge-model-url "$MODEL_URL" \
             --judge-model-api-key "$MODEL_API_KEY" \
             --parallel 3
