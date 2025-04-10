@@ -424,8 +424,12 @@ def play_a_match_pair(match: MatchPair, output_file: str, api_dict=None):
 
 def chat_completion_openai(model, conv, temperature, max_tokens, api_dict=None):
     if api_dict is not None:
-        openai.api_base = api_dict["api_base"]
-        openai.api_key = api_dict["api_key"]
+        if "api_base" in api_dict:
+            print(f"Using API base: {api_dict['api_base']}")
+            openai.api_base = api_dict["api_base"]
+        if "api_key" in api_dict:
+            print(f"Using API key: {api_dict['api_key'][0:4]}***")
+            openai.api_key = api_dict["api_key"]
     output = API_ERROR_OUTPUT
     min_sleep_time = 1
     max_sleep_time = API_RETRY_SLEEP

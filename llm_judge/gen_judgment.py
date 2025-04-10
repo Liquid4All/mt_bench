@@ -316,11 +316,15 @@ if __name__ == "__main__":
 
     # Prepare API dict if judge model URL and API key are provided
     api_dict = None
-    if args.judge_model_url and args.judge_model_api_key:
-        api_dict = {
-            "api_base": args.judge_model_url,
-            "api_key": args.judge_model_api_key
-        }
+
+    if args.judge_model_url or args.judge_model_api_key:
+        api_dict = {}
+        if args.judge_model_url:
+            print(f"Using custom judge model URL: {args.judge_model_url}")
+            api_dict["api_base"] = args.judge_model_url
+        if args.judge_model_api_key:
+            print(f"Using custom judge model API key: {args.judge_model_api_key[0:4]}***")
+            api_dict["api_key"] = args.judge_model_api_key
 
     # Play matches
     if args.parallel == 1:
