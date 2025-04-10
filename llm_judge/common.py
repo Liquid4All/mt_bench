@@ -13,16 +13,11 @@ from typing import Optional
 import random
 
 import openai
-import anthropic
 from dotenv import load_dotenv
 
 load_dotenv()
 
-from model.model_adapter import (
-    get_conversation_template,
-    ANTHROPIC_MODEL_LIST,
-    OPENAI_MODEL_LIST,
-)
+from model.model_adapter import get_conversation_template
 
 # API setting constants
 API_MAX_RETRY = 16
@@ -192,16 +187,9 @@ def run_judge_single(question, answer, judge, ref_answer, multi_turn=False, api_
         conv.append_message(conv.roles[0], user_prompt)
         conv.append_message(conv.roles[1], None)
 
-        if model in OPENAI_MODEL_LIST:
-            judgment = chat_completion_openai(
-                model, conv, temperature=0, max_tokens=2048, api_dict=api_dict
-            )
-        elif model in ANTHROPIC_MODEL_LIST:
-            judgment = chat_completion_anthropic(
-                model, conv, temperature=0, max_tokens=1024
-            )
-        else:
-            raise ValueError(f"Invalid judge model name: {model}")
+        judgment = chat_completion_openai(
+            model, conv, temperature=0, max_tokens=2048, api_dict=api_dict
+        )
 
         if judge.prompt_template["output_format"] == "[[rating]]":
             match = re.search(one_score_pattern, judgment)
@@ -300,20 +288,10 @@ def run_judge_pair(question, answer_a, answer_b, judge, ref_answer, multi_turn=F
     conv.append_message(conv.roles[0], user_prompt)
     conv.append_message(conv.roles[1], None)
 
-    if model in OPENAI_MODEL_LIST:
-        conv.set_system_message(system_prompt)
-        judgment = chat_completion_openai(
-            model, conv, temperature=0, max_tokens=2048, api_dict=api_dict
-        )
-    elif model in ANTHROPIC_MODEL_LIST:
-        if system_prompt != "You are a helpful assistant.":
-            user_prompt = "[Instruction]\n" + system_prompt + "\n\n" + user_prompt
-            conv.messages[0][1] = user_prompt
-        judgment = chat_completion_anthropic(
-            model, conv, temperature=0, max_tokens=1024
-        )
-    else:
-        raise ValueError(f"Invalid judge model name: {model}")
+    conv.set_system_message(system_prompt)
+    judgment = chat_completion_openai(
+        model, conv, temperature=0, max_tokens=2048, api_dict=api_dict
+    )
 
     if judge.prompt_template["output_format"] == "[[A]]":
         if "[[A]]" in judgment:
@@ -475,67 +453,6 @@ def chat_completion_openai(model, conv, temperature, max_tokens, api_dict=None):
             time.sleep(API_RETRY_SLEEP)
 
     return output
-
-
-# Remove Azure-specific function as we now use custom judge model parameters
-# This function is no longer needed
-
-    if "azure-" in model:
-        model = model[6:]
-
-# Function body removed as we now use custom judge model parameters
-
-
-def chat_completion_anthropic(model, conv, temperature, max_tokens, api_dict=None):
-    if api_dict is not None and "api_key" in api_dict:
-        api_key = api_dict["api_key"]
-    else:
-        api_key = os.environ["ANTHROPIC_API_KEY"]
-
-    output = API_ERROR_OUTPUT
-    for _ in range(API_MAX_RETRY):
-        try:
-            c = anthropic.Anthropic(api_key=api_key)
-            prompt = conv.get_prompt()
-            response = c.completions.create(
-                model=model,
-                prompt=prompt,
-                stop_sequences=[anthropic.HUMAN_PROMPT],
-                max_tokens_to_sample=max_tokens,
-                temperature=temperature,
-            )
-            output = response.completion
-            break
-        except anthropic.APIError as e:
-            print(type(e), e)
-            time.sleep(API_RETRY_SLEEP)
-    return output.strip()
-
-
-def chat_completion_palm(chat_state, model, conv, temperature, max_tokens):
-    from serve.api_provider import init_palm_chat
-
-    assert model == "palm-2-chat-bison-001"
-
-    if chat_state is None:
-        chat_state = init_palm_chat("chat-bison@001")
-
-    parameters = {
-        "temperature": temperature,
-        "top_p": 0.8,
-        "top_k": 40,
-        "max_output_tokens": max_tokens,
-    }
-    output = API_ERROR_OUTPUT
-    for _ in range(API_MAX_RETRY):
-        try:
-            response = chat_state.send_message(conv.messages[-2][1], **parameters)
-            output = response.text
-            break
-        except Exception as e:
-            print(type(e), e)
-            time.sleep(API_RETRY_SLEEP)
-    return chat_state, output
 
 
 def normalize_game_key_single(gamekey, result):
