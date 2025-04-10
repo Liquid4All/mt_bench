@@ -1076,7 +1076,7 @@ class ChatGPTAdapter(BaseModelAdapter):
     """The model adapter for ChatGPT"""
 
     def match(self, model_path: str):
-        return model_path in OPENAI_MODEL_LIST
+        return model_path.startswith("gpt")
 
     def load_model(self, model_path: str, from_pretrained_kwargs: dict):
         raise NotImplementedError()
@@ -1089,7 +1089,7 @@ class AzureOpenAIAdapter(BaseModelAdapter):
     """The model adapter for Azure OpenAI"""
 
     def match(self, model_path: str):
-        return model_path in ("azure-gpt-35-turbo", "azure-gpt-4")
+        return model_path.startswith("azure")
 
     def load_model(self, model_path: str, from_pretrained_kwargs: dict):
         raise NotImplementedError()
@@ -1118,7 +1118,7 @@ class ClaudeAdapter(BaseModelAdapter):
     """The model adapter for Claude"""
 
     def match(self, model_path: str):
-        return model_path in ANTHROPIC_MODEL_LIST
+        return model_path.startswith("claude")
 
     def load_model(self, model_path: str, from_pretrained_kwargs: dict):
         raise NotImplementedError()

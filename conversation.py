@@ -379,7 +379,7 @@ def register_conv_template(template: Conversation, override: bool = False):
 
 def get_conv_template(name: str) -> Conversation:
     """Get a conversation template."""
-    print("Using template: ", name)
+    print("Using template:", name)
     return conv_templates[name].copy()
 
 

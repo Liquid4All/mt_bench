@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 from concurrent.futures import ThreadPoolExecutor
+from typing import Any, Callable
 
 import numpy as np
 from tqdm import tqdm
@@ -47,7 +48,7 @@ def make_match(
             a_1 = model_answers[m_1][q_id]
             a_2 = model_answers[baseline_model][q_id]
             if ref_answers is not None:
-                ref = ref_answers[judge.model_name][q_id]
+                ref = ref_answers['gpt-4'][q_id]
                 match = MatchPair(
                     dict(q),
                     m_1,
@@ -87,7 +88,7 @@ def make_match_all_pairs(
                 a_1 = model_answers[m_1][q_id]
                 a_2 = model_answers[m_2][q_id]
                 if ref_answers is not None:
-                    ref = ref_answers[judge.model_name][q_id]
+                    ref = ref_answers['gpt-4'][q_id]
                     match = MatchPair(
                         dict(q),
                         m_1,
@@ -127,7 +128,7 @@ def make_match_single(
                 print(f"Model {m} does not have answer for question {q_id}")
                 continue
             if ref_answers is not None:
-                ref = ref_answers[judge.model_name][q_id]
+                ref = ref_answers['gpt-4'][q_id]
                 matches.append(
                     MatchSingle(
                         dict(q), m, a, judge, ref_answer=ref, multi_turn=multi_turn
@@ -184,7 +185,9 @@ if __name__ == "__main__":
         default="llm_judge/data/judge_prompts.jsonl",
         help="The file of judge prompts.",
     )
-    parser.add_argument("--judge-model", type=str, default="gpt-4")
+    parser.add_argument("--judge-model-name", type=str, default="gpt-4", help="The model used for judging")
+    parser.add_argument("--judge-model-url", type=str, default="", help="Base URL for the judge model API")
+    parser.add_argument("--judge-model-api-key", type=str, default="", help="API key for the judge model")
     parser.add_argument("--baseline-model", type=str, default="gpt-3.5-turbo")
     parser.add_argument(
         "--mode",
@@ -211,10 +214,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--first-n", type=int, help="A debug option. Only run the first `n` judgments."
     )
-    parser.add_argument(
-        "--azure", action="store_true", help="Use Azure API instead of openai.", default=False
-    )
+    # Remove Azure parameter as we now use custom judge model parameters
     args = parser.parse_args()
+    print(f"Model name: {args.model_list}")
+    print(f"Judge model name: {args.judge_model_name}")
+    if args.judge_model_url:
+        print(f"Judge model URL: {args.judge_model_url}")
+    if args.judge_model_api_key:
+        print(f"Judge model API key: {args.judge_model_api_key[0:4]}***")
 
     args.model_list = [model_path.replace("/", "_") for model_path in args.model_list]
 
@@ -246,22 +253,16 @@ if __name__ == "__main__":
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if args.mode == "single":
-        judges = make_judge_single(args.judge_model, judge_prompts)
-        play_a_match_func = play_a_match_single
-        if args.azure:
-            output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_single_azure.jsonl")
-        else:
-            model_suffix = "_".join(args.model_list)
-            output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_{model_suffix}.jsonl")
+        judges = make_judge_single(args.judge_model_name, judge_prompts)
+        play_a_match_func: Callable[[MatchSingle | MatchPair, str, dict[str, Any] | None], dict[str, Any]] = play_a_match_single
+        model_suffix = "_".join(args.model_list)
+        output_file = str(os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model_name}_{model_suffix}.jsonl"))
         make_match_func = make_match_single
         baseline_model = None
     else:
-        judges = make_judge_pairwise(args.judge_model, judge_prompts)
-        play_a_match_func = play_a_match_pair
-        if args.azure:
-            output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_pair_azure.jsonl")
-        else:
-            output_file = os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model}_pair.jsonl")
+        judges = make_judge_pairwise(args.judge_model_name, judge_prompts)
+        play_a_match_func: Callable[[MatchSingle | MatchPair, str, dict[str, Any] | None], dict[str, Any]] = play_a_match_pair
+        output_file = str(os.path.join(current_dir, "data", args.bench_name, "model_judgment", f"{args.judge_model_name}_pair.jsonl"))
         if args.mode == "pairwise-all":
             make_match_func = make_match_all_pairs
             baseline_model = None
@@ -308,7 +309,7 @@ if __name__ == "__main__":
     match_stat = {}
     match_stat["bench_name"] = args.bench_name
     match_stat["mode"] = args.mode
-    match_stat["judge"] = args.judge_model
+    match_stat["judge"] = args.judge_model_name
     match_stat["baseline"] = baseline_model
     match_stat["model_list"] = models
     match_stat["total_num_questions"] = len(questions)
@@ -320,14 +321,25 @@ if __name__ == "__main__":
     print(json.dumps(match_stat, indent=4, ensure_ascii=False))
     # input("Press Enter to confirm...")
 
+    # Prepare API dict if judge model URL and API key are provided
+    api_dict = None
+
+    if args.judge_model_url or args.judge_model_api_key:
+        api_dict = {}
+        if args.judge_model_url:
+            print(f"Using custom judge model URL: {args.judge_model_url}")
+            api_dict["api_base"] = args.judge_model_url
+        if args.judge_model_api_key:
+            print(f"Using custom judge model API key: {args.judge_model_api_key[0:4]}***")
+            api_dict["api_key"] = args.judge_model_api_key
+
     # Play matches
     if args.parallel == 1:
         for match in tqdm(matches):
-            play_a_match_func(match, output_file=output_file, azure=args.azure)
+            play_a_match_func(match, output_file=output_file, api_dict=api_dict)
     else:
-
-        def play_a_match_wrapper(match):
-            play_a_match_func(match, output_file=output_file, azure=args.azure)
+        def play_a_match_wrapper(input_match):
+            play_a_match_func(input_match, output_file=output_file, api_dict=api_dict)
 
         np.random.seed(0)
         np.random.shuffle(matches)

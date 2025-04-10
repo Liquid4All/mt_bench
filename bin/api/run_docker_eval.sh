@@ -22,10 +22,12 @@ print_usage() {
     echo "  --question-count  Number of questions to evaluate (optional)"
     echo
     echo "Judge mode options:"
-    echo "  --model-name      Name of the model to evaluate"
-    echo "  --openai-api-key  OpenAI API key for GPT-4 judgment"
-    echo "  --parallel        Number of parallel processes (default: 5)"
-    echo "  --ci              CI mode (default: false)"
+    echo "  --model-name          Name of the model to evaluate"
+    echo "  --judge-model-name    Name of the judge model (default: gpt-4)"
+    echo "  --judge-model-url     Base URL for the judge model API"
+    echo "  --judge-model-api-key API key for the judge model"
+    echo "  --parallel            Number of parallel processes (default: 5)"
+    echo "  --ci                  CI mode (default: false)"
 }
 
 if [ $# -lt 1 ]; then
@@ -106,7 +108,9 @@ if [[ "$MODE" == "generate" ]]; then
 elif [[ "$MODE" == "judge" ]]; then
     # Process judge mode arguments
     MODEL_NAME=""
-    OPENAI_API_KEY=""
+    JUDGE_MODEL_NAME="gpt-4"
+    JUDGE_MODEL_URL=""
+    JUDGE_MODEL_API_KEY=""
     PARALLEL="5"
     CI="false"
 
@@ -116,8 +120,17 @@ elif [[ "$MODE" == "judge" ]]; then
                 MODEL_NAME="$2"
                 shift 2
                 ;;
-            --openai-api-key)
-                OPENAI_API_KEY="$2"
+
+            --judge-model-name)
+                JUDGE_MODEL_NAME="$2"
+                shift 2
+                ;;
+            --judge-model-url)
+                JUDGE_MODEL_URL="$2"
+                shift 2
+                ;;
+            --judge-model-api-key)
+                JUDGE_MODEL_API_KEY="$2"
                 shift 2
                 ;;
             --parallel)
@@ -142,8 +155,15 @@ elif [[ "$MODE" == "judge" ]]; then
         exit 1
     fi
 
-    if [[ -z "$OPENAI_API_KEY" ]]; then
-        echo "Error: --openai-api-key is required"
+    # Validate required parameters
+    if [[ -z "$JUDGE_MODEL_API_KEY" ]]; then
+        echo "Error: --judge-model-api-key is required"
+        print_usage
+        exit 1
+    fi
+    
+    if [[ -z "$JUDGE_MODEL_URL" ]]; then
+        echo "Error: --judge-model-url is required"
         print_usage
         exit 1
     fi
@@ -152,7 +172,9 @@ elif [[ "$MODE" == "judge" ]]; then
     docker run --rm -it \
         --network="host" \
         -e MODEL_NAME="$MODEL_NAME" \
-        -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+        -e JUDGE_MODEL_NAME="$JUDGE_MODEL_NAME" \
+        -e JUDGE_MODEL_URL="$JUDGE_MODEL_URL" \
+        -e JUDGE_MODEL_API_KEY="$JUDGE_MODEL_API_KEY" \
         -v "$(pwd)/llm_judge:/app/llm_judge" \
         liquidai/mt-bench:latest judge \
         --parallel "$PARALLEL" \

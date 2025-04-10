@@ -26,9 +26,9 @@ def calculate_averages(scores):
 def display_result_single(args):
     if args.input_file is None:
         if args.azure:
-            input_file = f"data/{args.bench_name}/model_judgment/{args.judge_model}_single_azure.jsonl"
+            input_file = f"data/{args.bench_name}/model_judgment/{args.judge_model_name}_single_azure.jsonl"
         else:
-            input_file = f"data/{args.bench_name}/model_judgment/{args.judge_model}_single.jsonl"
+            input_file = f"data/{args.bench_name}/model_judgment/{args.judge_model_name}_single.jsonl"
     else:
         input_file = args.input_file
 
@@ -115,9 +115,9 @@ def display_result_single(args):
 def display_result_pairwise(args):
     if args.input_file is None:
         if args.azure:
-            input_file = f"data/{args.bench_name}/model_judgment/{args.judge_model}_pair_azure.jsonl"
+            input_file = f"data/{args.bench_name}/model_judgment/{args.judge_model_name}_pair_azure.jsonl"
         else:
-            input_file = f"data/{args.bench_name}/model_judgment/{args.judge_model}_pair.jsonl"
+            input_file = f"data/{args.bench_name}/model_judgment/{args.judge_model_name}_pair.jsonl"
     else:
         input_file = args.input_file
 
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--bench-name", type=str, default="mt_bench")
     parser.add_argument("--input-file", type=str)
-    parser.add_argument("--judge-model", type=str, default="gpt-4")
+    parser.add_argument("--judge-model-name", type=str, default="gpt-4")
     parser.add_argument("--output-file", type=str)
     parser.add_argument("--baseline-model", type=str, default="gpt-3.5-turbo")
     parser.add_argument(

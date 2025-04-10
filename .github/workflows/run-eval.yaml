@@ -71,11 +71,14 @@ jobs:
         env:
           MODEL_NAME: lfm-3b
           MODEL_URL: ${{ vars.MODEL_URL }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MODEL_API_KEY: ${{ secrets.MODEL_API_KEY }}
         run: |
+          # let the model judge itself against the GPT-4 answers
           bin/api/run_openai_judge.sh \
             --model-name "$MODEL_NAME" \
-            --openai-api-key "$OPENAI_API_KEY" \
+            --judge-model-name "lfm-7b" \
+            --judge-model-url "$MODEL_URL" \
+            --judge-model-api-key "$MODEL_API_KEY" \
             --parallel 3
 
       - name: Process Judge Results
