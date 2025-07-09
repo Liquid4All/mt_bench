@@ -39,8 +39,8 @@ jobs:
           MODEL_URL: ${{ vars.MODEL_URL }}
           MODEL_API_KEY: ${{ secrets.MODEL_API_KEY }}
         run: |
-          echo "Fetching available models from $MODEL_URL/v1/models"
-          RESPONSE=$(curl -s "$MODEL_URL/v1/models" -H "Authorization: Bearer $MODEL_API_KEY")
+          echo "Fetching available models from $MODEL_URL/models"
+          RESPONSE=$(curl -s "$MODEL_URL/models" -H "Authorization: Bearer $MODEL_API_KEY")
           echo "API Response: $RESPONSE"
           
           DATA_LENGTH=$(echo "$RESPONSE" | jq -r '.data | length')
