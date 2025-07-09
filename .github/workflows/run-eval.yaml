@@ -8,6 +8,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+  schedule:
+    - cron: '29 2 * * 1'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
@@ -33,9 +35,35 @@ jobs:
         run: |
           bin/api/prepare.sh
 
+      - name: Get Available Model
+        id: get_model
+        env:
+          MODEL_URL: ${{ vars.MODEL_URL }}
+          MODEL_API_KEY: ${{ secrets.MODEL_API_KEY }}
+        run: |
+          echo "Fetching available models from $MODEL_URL/models"
+          RESPONSE=$(curl -s "$MODEL_URL/models" -H "Authorization: Bearer $MODEL_API_KEY")
+          echo "API Response: $RESPONSE"
+          
+          DATA_LENGTH=$(echo "$RESPONSE" | jq -r '.data | length')
+          if [ "$DATA_LENGTH" = "null" ] || [ "$DATA_LENGTH" = "0" ]; then
+            echo "Error: No models available in the data array"
+            exit 1
+          fi
+          
+          SELECTED_MODEL=$(echo "$RESPONSE" | jq -r '.data[0].id')
+          
+          if [ "$SELECTED_MODEL" = "null" ] || [ -z "$SELECTED_MODEL" ]; then
+            echo "Error: Could not extract model ID from API response"
+            exit 1
+          fi
+          
+          echo "Selected model: $SELECTED_MODEL"
+          echo "model_name=$SELECTED_MODEL" >> $GITHUB_OUTPUT
+
       - name: Run API Evaluation Script
         env:
-          MODEL_NAME: lfm-3b
+          MODEL_NAME: ${{ steps.get_model.outputs.model_name }}
           MODEL_URL: ${{ vars.MODEL_URL }}
           MODEL_API_KEY: ${{ secrets.MODEL_API_KEY }}
         run: |
@@ -69,7 +97,7 @@ jobs:
 
       - name: Run OpenAI Judge
         env:
-          MODEL_NAME: lfm-3b
+          MODEL_NAME: ${{ steps.get_model.outputs.model_name }}
           MODEL_URL: ${{ vars.MODEL_URL }}
           MODEL_API_KEY: ${{ secrets.MODEL_API_KEY }}
         run: |
